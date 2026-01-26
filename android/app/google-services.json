@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "457224737198",
+    "project_id": "toureguideapp",
+    "storage_bucket": "toureguideapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457224737198:android:73b4e18d82e7d15dd6f83f",
+        "android_client_info": {
+          "package_name": "com.example.tourguideapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlffGXAsy47KQODLGeCzZPqGvZ95xN2as"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

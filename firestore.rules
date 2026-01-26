@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users: each user can read/write their own profile
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Places: public read; authenticated users can write (admin check done in app)
+    match /places/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Categories: public read; authenticated users can write (admin check done in app)
+    match /categories/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Favorites: only authenticated users can create favorites
+    match /favorites/{favId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Reviews: public read; authenticated users can create reviews
+    match /places/{placeId}/reviews/{reviewId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+
+    // Notifications: users can read their own notifications, admins can read all review notifications
+    match /notifications/{notificationId} {
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid || 
+        resource.data.type == 'review'
+      );
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && (
+        resource.data.userId == request.auth.uid || 
+        resource.data.type == 'review'
+      );
+    }
+
+    // Default: deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
