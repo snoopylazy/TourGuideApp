@@ -32,7 +32,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
   void initState() {
     super.initState();
     final args = Get.arguments as Map<String, dynamic>?;
-    _destination = args?['destination'] as LatLng? ?? LatLng(11.556444, 104.928208);
+    _destination =
+        args?['destination'] as LatLng? ?? LatLng(11.556444, 104.928208);
     _initializeLocation();
   }
 
@@ -55,7 +56,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      Get.snackbar('Permission Denied', 'Location permissions permanently denied');
+      Get.snackbar(
+        'Permission Denied',
+        'Location permissions permanently denied',
+      );
       Get.back();
       return;
     }
@@ -71,44 +75,46 @@ class _NavigationScreenState extends State<NavigationScreen> {
     await _getRoute();
 
     // Live location updates
-    _positionStream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((Position position) {
-      final newPos = LatLng(position.latitude, position.longitude);
-      setState(() {
-        _currentPosition = newPos;
-      });
+    _positionStream =
+        Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 10,
+          ),
+        ).listen((Position position) {
+          final newPos = LatLng(position.latitude, position.longitude);
+          setState(() {
+            _currentPosition = newPos;
+          });
 
-      _mapController.move(newPos, 15.5);
+          _mapController.move(newPos, 15.5);
 
-      // Check if arrived
-      double distance = Geolocator.distanceBetween(
-        newPos.latitude,
-        newPos.longitude,
-        _destination.latitude,
-        _destination.longitude,
-      );
+          // Check if arrived
+          double distance = Geolocator.distanceBetween(
+            newPos.latitude,
+            newPos.longitude,
+            _destination.latitude,
+            _destination.longitude,
+          );
 
-      if (distance <= _arrivalThreshold && !_arrived) {
-        setState(() => _arrived = true);
-        Get.snackbar(
-          'Congratulations!',
-          'You have arrived at your destination!',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 5),
-        );
-      }
-    });
+          if (distance <= _arrivalThreshold && !_arrived) {
+            setState(() => _arrived = true);
+            Get.snackbar(
+              'Congratulations!',
+              'You have arrived at your destination!',
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+              duration: const Duration(seconds: 5),
+            );
+          }
+        });
   }
 
   Future<void> _getRoute() async {
     if (_currentPosition == null) return;
 
-    final start = '${_currentPosition!.longitude},${_currentPosition!.latitude}';
+    final start =
+        '${_currentPosition!.longitude},${_currentPosition!.latitude}';
     final end = '${_destination.longitude},${_destination.latitude}';
 
     final url = Uri.parse(
@@ -150,105 +156,113 @@ class _NavigationScreenState extends State<NavigationScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text('Navigation', style: TextStyle(color: Colors.white)),
+          title: const Text(
+            'Get to Your Destination',
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: _currentPosition == null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ShimmerLoading(
-                    width: 50,
-                    height: 50,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  const SizedBox(height: 20),
-                  GlassContainer(
-                    padding: const EdgeInsets.all(16),
-                    child: const Text(
-                      'Getting your location...',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : Stack(
-              children: [
-                FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    initialCenter: _currentPosition!,
-                    initialZoom: 15.5,
-                  ),
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileLayer(
-                      urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      subdomains: const ['a', 'b', 'c'],
-                      userAgentPackageName: 'com.example.tourguideapp',
+                    ShimmerLoading(
+                      width: 50,
+                      height: 50,
+                      borderRadius: BorderRadius.circular(25),
                     ),
-                    if (_routePoints.isNotEmpty)  // Add this condition to avoid empty points error
-                      PolylineLayer(
-                        polylines: [
-                          Polyline(
-                            points: _routePoints,
-                            color: AppColors.primaryMedium,
-                            strokeWidth: 5.0,
-                          ),
-                        ],
+                    const SizedBox(height: 20),
+                    GlassContainer(
+                      padding: const EdgeInsets.all(16),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        child: const Text(
+                          'Getting your location...',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                       ),
-                    MarkerLayer(
-                      markers: [
-                        // Current location
-                        Marker(
-                          point: _currentPosition!,
-                          width: 50,
-                          height: 50,
-                          child: const Icon(
-                            Icons.my_location,
-                            color: Colors.blue,
-                            size: 40,
-                          ),
-                        ),
-                        // Destination
-                        Marker(
-                          point: _destination,
-                          width: 50,
-                          height: 50,
-                          child: const Icon(
-                            Icons.location_pin,
-                            color: Colors.red,
-                            size: 48,
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
-                if (_arrived)
-                  Positioned(
-                    bottom: 40,
-                    left: 20,
-                    right: 20,
-                    child: GlassContainer(
-                      padding: const EdgeInsets.all(20),
-                      child: const Center(
-                        child: Text(
-                          'You have arrived at your destination!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+              )
+            : Stack(
+                children: [
+                  FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      initialCenter: _currentPosition!,
+                      initialZoom: 15.5,
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        subdomains: const ['a', 'b', 'c'],
+                        userAgentPackageName: 'com.example.tourguideapp',
+                      ),
+                      if (_routePoints
+                          .isNotEmpty) // Add this condition to avoid empty points error
+                        PolylineLayer(
+                          polylines: [
+                            Polyline(
+                              points: _routePoints,
+                              color: AppColors.primaryMedium,
+                              strokeWidth: 5.0,
+                            ),
+                          ],
+                        ),
+                      MarkerLayer(
+                        markers: [
+                          // Current location
+                          Marker(
+                            point: _currentPosition!,
+                            width: 50,
+                            height: 50,
+                            child: const Icon(
+                              Icons.my_location,
+                              color: Colors.blue,
+                              size: 40,
+                            ),
+                          ),
+                          // Destination
+                          Marker(
+                            point: _destination,
+                            width: 50,
+                            height: 50,
+                            child: const Icon(
+                              Icons.location_pin,
+                              color: Colors.red,
+                              size: 48,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (_arrived)
+                    Positioned(
+                      bottom: 40,
+                      left: 20,
+                      right: 20,
+                      child: GlassContainer(
+                        padding: const EdgeInsets.all(20),
+                        child: const Center(
+                          child: Text(
+                            'You have arrived at your destination!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-              ],
-            ),
+                ],
+              ),
       ),
     );
   }

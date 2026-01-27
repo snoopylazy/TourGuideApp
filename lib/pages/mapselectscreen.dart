@@ -157,19 +157,22 @@ class _MapselectscreenState extends State<Mapselectscreen> {
               ),
             ),
             GlassContainer(
-              margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Selected Coordinates',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white.withOpacity(0.9),
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        'Selected Coordinates',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white.withOpacity(0.9),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -177,25 +180,31 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                       children: [
                         Expanded(
                           child: GlassContainer(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(10),
                             borderRadius: 12,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Latitude',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: Colors.white.withOpacity(0.8),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    'Latitude',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white.withOpacity(0.8),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
-                                  _picked.latitude.toStringAsFixed(6),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    _picked.latitude.toStringAsFixed(6),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -205,25 +214,31 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: GlassContainer(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(10),
                             borderRadius: 12,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Longitude',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: Colors.white.withOpacity(0.8),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    'Longitude',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white.withOpacity(0.8),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
-                                  _picked.longitude.toStringAsFixed(6),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    _picked.longitude.toStringAsFixed(6),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -261,20 +276,23 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                           ),
                         if (!viewOnly) const SizedBox(width: 12),
                         Expanded(
-                          child: SizedBox(
-                            height: 52,
-                            child: OutlinedButton.icon(
-                              onPressed: _startNavigation,
-                              icon: const Icon(Icons.directions),
-                              label: const Text('Navigate'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                side: const BorderSide(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: SizedBox(
+                              height: 52,
+                              child: OutlinedButton.icon(
+                                onPressed: _startNavigation,
+                                icon: const Icon(Icons.directions),
+                                label: const Text('Navigate'),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                               ),
                             ),
