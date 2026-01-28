@@ -13,6 +13,7 @@ import '../widgets/gradient_background.dart';
 import '../config/app_colors.dart';
 import 'favoriteplacescreen.dart';
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -29,6 +30,9 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
   late Timer _timer;
   int _currentPage = 0;
   int _totalPages = 1;
+
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  int _previousUnreadCount = 0;
 
   @override
   void initState() {
@@ -48,10 +52,31 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
         }
       }
     });
+
+    // ADD: Watch unreadCount and play sound only when it INCREASES
+    final notificationCtrl = Get.find<NotificationController>();
+    _previousUnreadCount = notificationCtrl.unreadCount.value;
+
+    ever(notificationCtrl.unreadCount, (int newCount) {
+      if (newCount > _previousUnreadCount && _previousUnreadCount >= 0) {
+        _playNotificationSound();
+      }
+      _previousUnreadCount = newCount;
+    });
+  }
+
+  // ADD: Helper method to play the sound
+  Future<void> _playNotificationSound() async {
+    try {
+      await _audioPlayer.play(AssetSource('alarm.mp3'));
+    } catch (e) {
+      debugPrint('Failed to play notification sound: $e');
+    }
   }
 
   @override
   void dispose() {
+    _audioPlayer.dispose();
     _timer.cancel();
     _pageController.dispose();
     super.dispose();

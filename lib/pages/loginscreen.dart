@@ -5,6 +5,7 @@ import '../widgets/glass_container.dart';
 import '../widgets/gradient_background.dart';
 import '../config/app_colors.dart';
 import 'registerscreen.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Loginscreen extends StatelessWidget {
   const Loginscreen({super.key});
@@ -15,6 +16,9 @@ class Loginscreen extends StatelessWidget {
     final RxString identifier = ''.obs;
     final RxString password = ''.obs;
     final RxBool obscurePassword = true.obs;
+
+    // Create a player instance (you can also make it global or in controller)
+    final player = AudioPlayer();
 
     return GradientBackground(
       child: Scaffold(
@@ -230,6 +234,11 @@ class Loginscreen extends StatelessWidget {
                                     onPressed: () async {
                                       if (identifier.value.trim().isEmpty ||
                                           password.value.trim().isEmpty) {
+                                        // Play error sound for validation failure
+                                        await player.play(
+                                          AssetSource('fail.mp3'),
+                                        );
+
                                         Get.snackbar(
                                           'Error',
                                           'Please fill email and password',
@@ -238,10 +247,43 @@ class Loginscreen extends StatelessWidget {
                                         );
                                         return;
                                       }
-                                      await auth.login(
-                                        identifier.value.trim(),
-                                        password.value.trim(),
-                                      );
+
+                                      // Show loading
+                                      auth.isLoading.value = true;
+
+                                      // await auth.login(
+                                      //   identifier.value.trim(),
+                                      //   password.value.trim(),
+                                      // );
+
+                                      try {
+                                        await auth.login(
+                                          identifier.value.trim(),
+                                          password.value.trim(),
+                                        );
+
+                                        // Success → play sound
+                                        await player.play(
+                                          AssetSource('success.mp3'),
+                                        );
+                                      } catch (e) {
+                                        // Failed → play fail sound
+                                        await player.play(
+                                          AssetSource('fail.mp3'),
+                                        );
+
+                                        Get.snackbar(
+                                          'Login Failed',
+                                          e.toString().replaceAll(
+                                            'Exception: ',
+                                            '',
+                                          ),
+                                          backgroundColor: Colors.red.shade100,
+                                          colorText: Colors.red.shade900,
+                                        );
+                                      } finally {
+                                        auth.isLoading.value = false;
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,

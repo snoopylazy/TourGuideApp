@@ -5,6 +5,7 @@ import '../utils/url_validator.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/gradient_background.dart';
 import '../config/app_colors.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Registerscreen extends StatelessWidget {
   Registerscreen({super.key});
@@ -14,6 +15,9 @@ class Registerscreen extends StatelessWidget {
   final RxString password = ''.obs;
   final RxString imageUrl = ''.obs;
   final RxBool obscurePassword = true.obs;
+
+  // Audio player instance (cheap for short effects)
+  final player = AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -223,6 +227,11 @@ class Registerscreen extends StatelessWidget {
                                       if (name.value.trim().isEmpty ||
                                           email.value.trim().isEmpty ||
                                           password.value.trim().isEmpty) {
+                                        // Play error sound for validation failure
+                                        await player.play(
+                                          AssetSource('fail.mp3'),
+                                        );
+
                                         Get.snackbar(
                                           'Error',
                                           'Please fill all required fields',
@@ -233,6 +242,11 @@ class Registerscreen extends StatelessWidget {
                                       }
                                       if (imageUrl.value.isNotEmpty &&
                                           !isValidImageUrl(imageUrl.value)) {
+                                        // Play error sound for invalid URL
+                                        await player.play(
+                                          AssetSource('fail.mp3'),
+                                        );
+
                                         Get.snackbar(
                                           'Error',
                                           'Invalid image URL',
@@ -241,12 +255,49 @@ class Registerscreen extends StatelessWidget {
                                         );
                                         return;
                                       }
-                                      await _auth.register(
-                                        name.value.trim(),
-                                        email.value.trim(),
-                                        password.value.trim(),
-                                        profileImageUrl: imageUrl.value.trim(),
-                                      );
+
+                                      _auth.isLoading.value = true;
+
+                                      try {
+                                        await _auth.register(
+                                          name.value.trim(),
+                                          email.value.trim(),
+                                          password.value.trim(),
+                                          profileImageUrl: imageUrl.value
+                                              .trim(),
+                                        );
+
+                                        // Success → play sound
+                                        await player.play(
+                                          AssetSource('success.mp3'),
+                                        );
+
+                                        // Optional: success message or auto-redirect
+                                        Get.snackbar(
+                                          'Success',
+                                          'Account created! Welcome aboard.',
+                                          backgroundColor:
+                                              Colors.green.shade100,
+                                          colorText: Colors.green.shade900,
+                                        );
+                                      } catch (e) {
+                                        // Failure → play fail sound
+                                        await player.play(
+                                          AssetSource('fail.mp3'),
+                                        );
+
+                                        Get.snackbar(
+                                          'Registration Failed',
+                                          e.toString().replaceAll(
+                                            'Exception: ',
+                                            '',
+                                          ),
+                                          backgroundColor: Colors.red.shade100,
+                                          colorText: Colors.red.shade900,
+                                        );
+                                      } finally {
+                                        _auth.isLoading.value = false;
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
