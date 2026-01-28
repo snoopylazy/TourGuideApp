@@ -101,7 +101,7 @@ class _SplashscreenState extends State<Splashscreen>
                         ),
                         const SizedBox(height: 32),
                         const Text(
-                          'WanderGuide',
+                          'Explore with Confidence',
                           style: TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class _SplashscreenState extends State<Splashscreen>
                         ),
                         const SizedBox(height: 12),
                         const Text(
-                          'Discover Cambodia\'s Hidden Gems',
+                          'Your local guide to unforgettable journeys',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white70,

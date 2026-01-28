@@ -118,12 +118,12 @@ class AdminController extends GetxController {
     return await addPlace(placeData);
   }
 
-  Future<void> updatePlace(String id, Map<String, dynamic> data) async {
+  Future<bool> updatePlace(String id, Map<String, dynamic> data) async {
     try {
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
         Get.snackbar('Error', 'Please login first');
-        return;
+        return false;
       }
 
       isLoading.value = true;
@@ -131,8 +131,10 @@ class AdminController extends GetxController {
       await _firestore.collection('places').doc(id).update(data);
       await fetchPlaces();
       Get.snackbar('Success', 'Place updated successfully');
+      return true;
     } catch (e) {
       Get.snackbar('Error', 'Failed to update place: $e');
+      return false;
     } finally {
       isLoading.value = false;
     }

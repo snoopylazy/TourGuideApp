@@ -7,10 +7,25 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:intl/intl.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/shimmer_loading.dart';
 import '../widgets/gradient_background.dart';
 import '../config/app_colors.dart';
+
+enum RouteMode { walk, motor, car, bus }
+
+class _RouteData {
+  final int durationSeconds;
+  final double distanceMeters;
+  final List<LatLng> points;
+
+  const _RouteData({
+    required this.durationSeconds,
+    required this.distanceMeters,
+    required this.points,
+  });
+}
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});
@@ -27,6 +42,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
   StreamSubscription<Position>? _positionStream;
   bool _arrived = false;
   final double _arrivalThreshold = 50.0; // meters
+
+  RouteMode _selectedMode = RouteMode.car;
+  final Map<RouteMode, _RouteData> _routes = {};
+  bool _loadingRoutes = true;
 
   @override
   void initState() {
@@ -116,32 +135,118 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final start =
         '${_currentPosition!.longitude},${_currentPosition!.latitude}';
     final end = '${_destination.longitude},${_destination.latitude}';
+    const base = 'http://router.project-osrm.org/route/v1';
+    const opts = 'overview=full&geometries=polyline';
+    final polylinePoints = PolylinePoints();
 
-    final url = Uri.parse(
-      'http://router.project-osrm.org/route/v1/driving/$start;$end?overview=full&geometries=polyline',
-    );
+    setState(() => _loadingRoutes = true);
+
+    Future<_RouteData?> fetchProfile(String profile) async {
+      final url = Uri.parse('$base/$profile/$start;$end?$opts');
+      try {
+        final response = await http.get(url);
+        if (response.statusCode != 200) return null;
+        final json = jsonDecode(response.body);
+        if (json['routes']?.isEmpty ?? true) return null;
+        final r = json['routes'][0];
+        final geometry = r['geometry'] as String;
+        final duration = (r['duration'] as num).toDouble();
+        final distance = (r['distance'] as num).toDouble();
+        final result = polylinePoints.decodePolyline(geometry);
+        final points = result
+            .map((point) => LatLng(point.latitude, point.longitude))
+            .toList();
+        return _RouteData(
+          durationSeconds: duration.round(),
+          distanceMeters: distance,
+          points: points,
+        );
+      } catch (_) {
+        return null;
+      }
+    }
 
     try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        if (json['routes']?.isNotEmpty ?? false) {
-          final geometry = json['routes'][0]['geometry'] as String;
-          final polylinePoints = PolylinePoints();
-          final result = polylinePoints.decodePolyline(geometry);
+      final footFuture = fetchProfile('foot');
+      final drivingFuture = fetchProfile('driving');
+      final bikeFuture = fetchProfile('bike');
 
-          setState(() {
-            _routePoints = result
-                .map((point) => LatLng(point.latitude, point.longitude))
-                .toList();
-          });
+      final foot = await footFuture;
+      final driving = await drivingFuture;
+      final bike = await bikeFuture;
+
+      if (!mounted) return;
+      setState(() {
+        _loadingRoutes = false;
+        _routes.clear();
+        if (foot != null) {
+          _routes[RouteMode.walk] = foot;
         }
-      } else {
-        Get.snackbar('Route Error', 'Could not fetch route');
+        if (driving != null) {
+          _routes[RouteMode.car] = driving;
+          // Motor: use bike route when available (closer to motorcycle); else driving × 1.1
+          if (bike != null) {
+            _routes[RouteMode.motor] = bike;
+          } else {
+            final motorDuration = (driving.durationSeconds * 1.1).round();
+            _routes[RouteMode.motor] = _RouteData(
+              durationSeconds: motorDuration,
+              distanceMeters: driving.distanceMeters,
+              points: driving.points,
+            );
+          }
+          // Bus: ~35% slower than car (stops, traffic)
+          final busDuration = (driving.durationSeconds * 1.35).round();
+          _routes[RouteMode.bus] = _RouteData(
+            durationSeconds: busDuration,
+            distanceMeters: driving.distanceMeters,
+            points: driving.points,
+          );
+        }
+        if (_routes.isNotEmpty && !_routes.containsKey(_selectedMode)) {
+          _selectedMode = RouteMode.car;
+          if (!_routes.containsKey(_selectedMode)) {
+            _selectedMode = _routes.keys.first;
+          }
+        }
+        _applySelectedRoute();
+      });
+
+      if (_routes.isEmpty) {
+        Get.snackbar('Route Error', 'Could not fetch any route');
       }
     } catch (e) {
+      if (mounted) setState(() => _loadingRoutes = false);
       Get.snackbar('Network Error', 'Failed to load route: $e');
     }
+  }
+
+  void _applySelectedRoute() {
+    final data = _routes[_selectedMode];
+    if (data != null) {
+      _routePoints = List.from(data.points);
+    }
+  }
+
+  void _selectMode(RouteMode mode) {
+    if (!_routes.containsKey(mode)) return;
+    setState(() {
+      _selectedMode = mode;
+      _applySelectedRoute();
+    });
+  }
+
+  String _formatDuration(int seconds) {
+    if (seconds < 60) return '$seconds sec';
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    if (s == 0) return '$m min';
+    return '$m min $s sec';
+  }
+
+  String _formatArriveBy(int durationSeconds) {
+    final arrive = DateTime.now().add(Duration(seconds: durationSeconds));
+    return DateFormat('h:mm a').format(arrive);
   }
 
   @override
@@ -242,6 +347,19 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       ),
                     ],
                   ),
+                  if (!_arrived && _routes.isNotEmpty && !_loadingRoutes)
+                    Positioned(
+                      left: 12,
+                      right: 12,
+                      bottom: 16,
+                      child: _TransportModeCards(
+                        routes: _routes,
+                        selectedMode: _selectedMode,
+                        onSelect: _selectMode,
+                        formatDuration: _formatDuration,
+                        formatArriveBy: _formatArriveBy,
+                      ),
+                    ),
                   if (_arrived)
                     Positioned(
                       bottom: 40,
@@ -263,6 +381,154 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     ),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+class _TransportModeCards extends StatelessWidget {
+  final Map<RouteMode, _RouteData> routes;
+  final RouteMode selectedMode;
+  final void Function(RouteMode) onSelect;
+  final String Function(int) formatDuration;
+  final String Function(int) formatArriveBy;
+
+  const _TransportModeCards({
+    required this.routes,
+    required this.selectedMode,
+    required this.onSelect,
+    required this.formatDuration,
+    required this.formatArriveBy,
+  });
+
+  static const _modes = [
+    RouteMode.walk,
+    RouteMode.motor,
+    RouteMode.car,
+    RouteMode.bus,
+  ];
+
+  static IconData _icon(RouteMode m) {
+    switch (m) {
+      case RouteMode.walk:
+        return Icons.directions_walk;
+      case RouteMode.motor:
+        return Icons.two_wheeler;
+      case RouteMode.car:
+        return Icons.directions_car;
+      case RouteMode.bus:
+        return Icons.directions_bus;
+    }
+  }
+
+  static String _label(RouteMode m) {
+    switch (m) {
+      case RouteMode.walk:
+        return 'Walk';
+      case RouteMode.motor:
+        return 'Motor';
+      case RouteMode.car:
+        return 'Car';
+      case RouteMode.bus:
+        return 'Bus';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassContainer(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      child: SizedBox(
+        height: 90,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          itemCount: _modes.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 10),
+          itemBuilder: (context, i) {
+            final mode = _modes[i];
+            final data = routes[mode];
+            if (data == null) return const SizedBox.shrink();
+            final selected = selectedMode == mode;
+            return GestureDetector(
+              onTap: () => onSelect(mode),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 110,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? AppColors.primaryMedium.withOpacity(0.35)
+                      : Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: selected
+                        ? AppColors.primaryLight
+                        : Colors.white.withOpacity(0.25),
+                    width: selected ? 2 : 1,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _icon(mode),
+                          size: 18,
+                          color: selected
+                              ? AppColors.primaryLight
+                              : Colors.white.withOpacity(0.9),
+                        ),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            _label(mode),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: selected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      formatDuration(data.durationSeconds),
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.95),
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Arrive ${formatArriveBy(data.durationSeconds)}',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 10,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
