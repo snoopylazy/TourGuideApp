@@ -10,9 +10,14 @@ import '../widgets/glass_container.dart';
 import '../widgets/gradient_background.dart';
 import '../config/app_colors.dart';
 
-class Placedetailscreen extends StatelessWidget {
+class Placedetailscreen extends StatefulWidget {
   const Placedetailscreen({super.key});
 
+  @override
+  State<Placedetailscreen> createState() => _PlacedetailscreenState();
+}
+
+class _PlacedetailscreenState extends State<Placedetailscreen> {
   @override
   Widget build(BuildContext context) {
     final args = Get.arguments as Map<String, dynamic>?;
@@ -28,9 +33,20 @@ class Placedetailscreen extends StatelessWidget {
           body: Center(
             child: GlassContainer(
               padding: const EdgeInsets.all(32),
-              child: const Text(
-                'No place selected',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: const Text(
+                  'No place selected',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ),
           ),
@@ -77,6 +93,7 @@ class Placedetailscreen extends StatelessWidget {
         }
 
         final data = snap.data!.data() as Map<String, dynamic>;
+        final imageUrls = _parseImageUrls(data['imageUrl']);
 
         return GradientBackground(
           child: Scaffold(
@@ -90,14 +107,11 @@ class Placedetailscreen extends StatelessWidget {
                   leading: Container(
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.black.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: AppColors.primaryDark,
-                      ),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () => Get.back(),
                     ),
                   ),
@@ -105,7 +119,7 @@ class Placedetailscreen extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.black.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: StreamBuilder<DocumentSnapshot>(
@@ -125,9 +139,7 @@ class Placedetailscreen extends StatelessWidget {
                               isFavorite
                                   ? Icons.favorite
                                   : Icons.favorite_border,
-                              color: isFavorite
-                                  ? Colors.red
-                                  : Colors.grey.shade700,
+                              color: isFavorite ? Colors.red : Colors.white,
                               size: 28,
                             ),
                             onPressed: () async {
@@ -191,27 +203,7 @@ class Placedetailscreen extends StatelessWidget {
                     ),
                   ],
                   flexibleSpace: FlexibleSpaceBar(
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        NetworkImageWidget(
-                          url: data['imageUrl'] ?? '',
-                          fit: BoxFit.cover,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.3),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    background: PlaceImageCarousel(imageUrls: imageUrls),
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -237,31 +229,80 @@ class Placedetailscreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              if (data['categoryName'] != null)
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        data['categoryName'],
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 13,
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  children: [
+                                    if (data['categoryName'] != null)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue.withOpacity(0.3),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.category,
+                                              size: 14,
+                                              color: Colors.white,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              data['categoryName'],
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                  ),
+                                    if (data['categoryName'] != null &&
+                                        data['areaName'] != null)
+                                      const SizedBox(width: 8),
+                                    if (data['areaName'] != null)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.3),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.location_city,
+                                              size: 14,
+                                              color: Colors.white,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              data['areaName'],
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
                                 ),
+                              ),
                               const SizedBox(height: 10),
                               Container(
                                 padding: const EdgeInsets.all(10),
@@ -275,18 +316,18 @@ class Placedetailscreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Divider(height: 2),
+                              const Divider(height: 2),
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.location_on,
                                       color: Colors.white,
                                       size: 22,
                                     ),
-                                    const SizedBox(width: 8),
-                                    const Text(
+                                    SizedBox(width: 8),
+                                    Text(
                                       'ទីតាំង',
                                       style: TextStyle(
                                         fontSize: 18,
@@ -329,98 +370,6 @@ class Placedetailscreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        // GlassContainer(
-                        //   padding: const EdgeInsets.all(10),
-                        //   child: Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: [
-                        //       Container(
-                        //         padding: const EdgeInsets.all(10),
-                        //         child: Row(
-                        //           children: [
-                        //             Icon(
-                        //               Icons.location_on,
-                        //               color: Colors.white,
-                        //               size: 22,
-                        //             ),
-                        //             const SizedBox(width: 8),
-                        //             const Text(
-                        //               'Location',
-                        //               style: TextStyle(
-                        //                 fontSize: 18,
-                        //                 fontWeight: FontWeight.bold,
-                        //                 color: Colors.white,
-                        //               ),
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       ),
-                        // const SizedBox(height: 20),
-                        // Container(
-                        //   padding: const EdgeInsets.all(10),
-                        //   child: Row(
-                        //     children: [
-                        //       Expanded(
-                        //         child: Column(
-                        //           crossAxisAlignment:
-                        //               CrossAxisAlignment.start,
-                        //           children: [
-                        //             Text(
-                        //               'Latitude',
-                        //               style: TextStyle(
-                        //                 fontSize: 13,
-                        //                 color: Colors.white.withOpacity(
-                        //                   0.7,
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //             const SizedBox(height: 6),
-                        //             Text(
-                        //               '${data['lat']}',
-                        //               style: const TextStyle(
-                        //                 fontSize: 15,
-                        //                 fontWeight: FontWeight.w600,
-                        //                 color: Colors.white,
-                        //               ),
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       ),
-                        //       Expanded(
-                        //         child: Column(
-                        //           crossAxisAlignment:
-                        //               CrossAxisAlignment.start,
-                        //           children: [
-                        //             Text(
-                        //               'Longitude',
-                        //               style: TextStyle(
-                        //                 fontSize: 13,
-                        //                 color: Colors.white.withOpacity(
-                        //                   0.7,
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //             const SizedBox(height: 6),
-                        //             Text(
-                        //               '${data['lng']}',
-                        //               style: const TextStyle(
-                        //                 fontSize: 15,
-                        //                 fontWeight: FontWeight.w600,
-                        //                 color: Colors.white,
-                        //               ),
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        // const SizedBox(height: 20),
-
-                        //     ],
-                        //   ),
-                        // ),
-                        // const SizedBox(height: 5),
                         GlassContainer(
                           padding: const EdgeInsets.all(10),
                           child: Column(
@@ -429,14 +378,14 @@ class Placedetailscreen extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.star,
                                       color: Colors.white,
                                       size: 22,
                                     ),
-                                    const SizedBox(width: 8),
-                                    const Text(
+                                    SizedBox(width: 8),
+                                    Text(
                                       'បញ្ចេញមតិ',
                                       style: TextStyle(
                                         fontSize: 18,
@@ -472,12 +421,27 @@ class Placedetailscreen extends StatelessWidget {
     );
   }
 
+  List<String> _parseImageUrls(dynamic imageUrlData) {
+    if (imageUrlData == null) return [];
+
+    if (imageUrlData is String) {
+      return imageUrlData
+          .split(',')
+          .map((url) => url.trim())
+          .where((url) => url.isNotEmpty)
+          .toList();
+    } else if (imageUrlData is List) {
+      return imageUrlData.map((url) => url.toString().trim()).toList();
+    }
+
+    return [];
+  }
+
   Widget _buildReviewsSection(
     String placeId,
     String? uid,
     ProfileController profileCtrl,
   ) {
-    // Fetch reviews from Firestore
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('places')
@@ -487,7 +451,9 @@ class Placedetailscreen extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: Colors.white));
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.white),
+          );
         }
 
         final reviews = snapshot.data?.docs ?? [];
@@ -496,12 +462,9 @@ class Placedetailscreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (reviews.isEmpty)
-              Text(
+              const Text(
                 'No reviews yet. Be the first to review!',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.white70, fontSize: 14),
               ),
             if (reviews.isNotEmpty)
               ListView.builder(
@@ -591,7 +554,7 @@ class Placedetailscreen extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () => Get.toNamed('/login'),
-                  child: Text(
+                  child: const Text(
                     'Login to add a review',
                     style: TextStyle(
                       color: Colors.white,
@@ -615,7 +578,9 @@ class Placedetailscreen extends StatelessWidget {
 
     return Obx(() {
       if (profileCtrl.isLoading.value) {
-        return Center(child: CircularProgressIndicator(color: Colors.white));
+        return const Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        );
       }
 
       final user = profileCtrl.user.value;
@@ -744,15 +709,158 @@ class Placedetailscreen extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text(
-                  'បញ្ជូន',
-                  style: TextStyle(fontSize: 14),
-                ),
+                child: const Text('បញ្ជូន', style: TextStyle(fontSize: 14)),
               ),
             ),
           ),
         ],
       );
     });
+  }
+}
+
+// ────────────────────────────────────────────────
+//  New separate widget – only this part rebuilds on page change
+// ────────────────────────────────────────────────
+class PlaceImageCarousel extends StatefulWidget {
+  final List<String> imageUrls;
+
+  const PlaceImageCarousel({super.key, required this.imageUrls});
+
+  @override
+  State<PlaceImageCarousel> createState() => _PlaceImageCarouselState();
+}
+
+class _PlaceImageCarouselState extends State<PlaceImageCarousel> {
+  late final PageController _pageController;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.imageUrls.isEmpty) {
+      return const NetworkImageWidget(url: '', fit: BoxFit.cover);
+    }
+
+    final hasMultiple = widget.imageUrls.length > 1;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        PageView.builder(
+          controller: _pageController,
+          onPageChanged: (index) {
+            if (mounted) {
+              setState(() => _currentIndex = index);
+            }
+          },
+          itemCount: widget.imageUrls.length,
+          itemBuilder: (context, index) {
+            return NetworkImageWidget(
+              url: widget.imageUrls[index],
+              fit: BoxFit.cover,
+            );
+          },
+        ),
+
+        // Gradient overlay
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
+            ),
+          ),
+        ),
+
+        // Navigation arrows
+        if (hasMultiple)
+          Positioned(
+            left: 16,
+            right: 16,
+            top: 0,
+            bottom: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (_currentIndex > 0)
+                  _buildNavButton(
+                    icon: Icons.chevron_left,
+                    onPressed: () => _pageController.previousPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    ),
+                  )
+                else
+                  const SizedBox(width: 48),
+
+                if (_currentIndex < widget.imageUrls.length - 1)
+                  _buildNavButton(
+                    icon: Icons.chevron_right,
+                    onPressed: () => _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    ),
+                  )
+                else
+                  const SizedBox(width: 48),
+              ],
+            ),
+          ),
+
+        // Dots
+        if (hasMultiple)
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                widget.imageUrls.length,
+                (i) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentIndex == i
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.4),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildNavButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.5),
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white, size: 32),
+        onPressed: onPressed,
+      ),
+    );
   }
 }

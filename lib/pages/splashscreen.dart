@@ -74,13 +74,17 @@ class _SplashscreenState extends State<Splashscreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const SizedBox(height: 32),
-                        Text(
-                          'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textLight, // ← changed to white
-                            letterSpacing: 1.2,
+                        Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
+                            style: TextStyle(
+                              fontSize: 34,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textLight,
+                              letterSpacing: 1.2,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 12),

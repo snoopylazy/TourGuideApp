@@ -7,6 +7,7 @@ class AdminController extends GetxController {
   final RxBool isAdmin = false.obs;
   final RxList<Map<String, dynamic>> places = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> categories = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> areas = <Map<String, dynamic>>[].obs;
   final RxBool isLoading = false.obs;
 
   // simple hard-coded admin credentials
@@ -21,15 +22,28 @@ class AdminController extends GetxController {
 
   Future<void> fetchPlaces() async {
     isLoading.value = true;
-    final snapshot = await _firestore.collection('places').orderBy('createdAt', descending: true).get();
+    final snapshot = await _firestore
+        .collection('places')
+        .orderBy('createdAt', descending: true)
+        .get();
     places.value = snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
     isLoading.value = false;
   }
 
   Future<void> fetchCategories() async {
     isLoading.value = true;
-    final snap = await _firestore.collection('categories').orderBy('name').get();
+    final snap = await _firestore
+        .collection('categories')
+        .orderBy('name')
+        .get();
     categories.value = snap.docs.map((d) => {'id': d.id, ...d.data()}).toList();
+    isLoading.value = false;
+  }
+
+  Future<void> fetchAreas() async {
+    isLoading.value = true;
+    final snap = await _firestore.collection('areas').orderBy('name').get();
+    areas.value = snap.docs.map((d) => {'id': d.id, ...d.data()}).toList();
     isLoading.value = false;
   }
 
@@ -72,9 +86,9 @@ class AdminController extends GetxController {
 
       isLoading.value = true;
       await _firestore.collection('categories').add({
-        'name': name.trim(), 
+        'name': name.trim(),
         'status': 'active', // Default status
-        'createdAt': FieldValue.serverTimestamp()
+        'createdAt': FieldValue.serverTimestamp(),
       });
       await fetchCategories();
       Get.snackbar('Success', 'Category added successfully');
@@ -88,18 +102,49 @@ class AdminController extends GetxController {
     }
   }
 
-  Future<bool> addPlaceWithCoords(Map<String, dynamic> data, double? lat, double? lng) async {
+  Future<bool> addArea(String name) async {
+    if (name.trim().isEmpty) return false;
+    try {
+      // Check if user is authenticated
+      final currentUser = fb.FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        Get.snackbar('Error', 'Please login first');
+        return false;
+      }
+
+      isLoading.value = true;
+      await _firestore.collection('areas').add({
+        'name': name.trim(),
+        'status': 'active', // Default status
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      await fetchAreas();
+      Get.snackbar('Success', 'Area added successfully');
+      return true;
+    } catch (e) {
+      print('Error adding area: $e'); // Debug log
+      Get.snackbar('Error', 'Failed to add area: $e');
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> addPlaceWithCoords(
+    Map<String, dynamic> data,
+    double? lat,
+    double? lng,
+  ) async {
     print('addPlaceWithCoords called with lat: $lat, lng: $lng');
     print('data: $data');
-    
-    // Create a new map to avoid any reference issues
+
     final Map<String, dynamic> placeData = {
       'title': data['title'] as String,
-      'imageUrl': data['imageUrl'] as String,
+      'imageUrl': data['imageUrl'], // Can be String or List
       'description': data['description'] as String,
       'status': 'active',
     };
-    
+
     // Add category data if present
     if (data['categoryId'] != null) {
       placeData['categoryId'] = data['categoryId'] as String;
@@ -107,13 +152,21 @@ class AdminController extends GetxController {
     if (data['categoryName'] != null) {
       placeData['categoryName'] = data['categoryName'] as String;
     }
-    
+
+    // Add area data if present (THIS WAS MISSING!)
+    if (data['areaId'] != null) {
+      placeData['areaId'] = data['areaId'] as String;
+    }
+    if (data['areaName'] != null) {
+      placeData['areaName'] = data['areaName'] as String;
+    }
+
     // Add coordinates if present
     if (lat != null && lng != null) {
       placeData['lat'] = lat.toDouble();
       placeData['lng'] = lng.toDouble();
     }
-    
+
     print('Final placeData: $placeData');
     return await addPlace(placeData);
   }
@@ -193,6 +246,47 @@ class AdminController extends GetxController {
       Get.snackbar('Success', 'Category deleted successfully');
     } catch (e) {
       Get.snackbar('Error', 'Failed to delete category: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> updateArea(String id, Map<String, dynamic> data) async {
+    try {
+      final currentUser = fb.FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        Get.snackbar('Error', 'Please login first');
+        return false;
+      }
+
+      isLoading.value = true;
+      data['updatedAt'] = FieldValue.serverTimestamp();
+      await _firestore.collection('areas').doc(id).update(data);
+      await fetchAreas();
+      Get.snackbar('Success', 'Area updated successfully');
+      return true;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to update area: $e');
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> deleteArea(String id) async {
+    try {
+      final currentUser = fb.FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        Get.snackbar('Error', 'Please login first');
+        return;
+      }
+
+      isLoading.value = true;
+      await _firestore.collection('areas').doc(id).delete();
+      await fetchAreas();
+      Get.snackbar('Success', 'Area deleted successfully');
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to delete area: $e');
     } finally {
       isLoading.value = false;
     }

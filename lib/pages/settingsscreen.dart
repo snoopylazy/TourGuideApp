@@ -34,6 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _placesLoaded = false;
   bool _categoriesLoaded = false;
+  bool _areasLoaded = false;
 
   // initial setup when the screen starts.
   @override
@@ -165,7 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final isAdmin = user.role == 'admin';
 
         return DefaultTabController(
-          length: isAdmin ? 3 : 1,
+          length: isAdmin ? 4 : 1,
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
@@ -184,6 +185,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       tabs: const [
                         Tab(text: 'ប្រវត្តិរូប'),
                         Tab(text: 'ទីកន្លែង'),
+                        Tab(text: 'តំបន់'),
                         Tab(text: 'ប្រភេទ'),
                       ],
                     )
@@ -194,6 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       _buildProfileTab(user),
                       _buildPlacesTab(),
+                      _buildAreasTab(),
                       _buildCategoriesTab(),
                     ],
                   )
@@ -688,6 +691,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     itemCount: places.length,
                     itemBuilder: (context, index) {
                       final p = places[index];
+                      final imageUrl = p['imageUrl'];
+                      final firstImage = imageUrl is List
+                          ? (imageUrl.isNotEmpty ? imageUrl[0] : '')
+                          : (imageUrl ?? '');
+
                       return GlassContainer(
                         margin: const EdgeInsets.only(bottom: 16),
                         padding: const EdgeInsets.all(12),
@@ -698,9 +706,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: SizedBox(
                               width: 60,
                               height: 60,
-                              child: NetworkImageWidget(
-                                url: p['imageUrl'] ?? '',
-                              ),
+                              child: NetworkImageWidget(url: firstImage),
                             ),
                           ),
                           title: Text(
@@ -738,6 +744,109 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ],
                           ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildAreasTab() {
+    if (!_areasLoaded) {
+      _areasLoaded = true;
+      adminCtrl.fetchAreas();
+    }
+    return Obx(() {
+      if (adminCtrl.isLoading.value) {
+        return ListView.builder(
+          padding: const EdgeInsets.all(20),
+          itemCount: 5,
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: ShimmerLoading(
+              width: double.infinity,
+              height: 70,
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        );
+      }
+      final areas = adminCtrl.areas;
+
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: GlassContainer(
+              padding: EdgeInsets.zero,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add_location),
+                    label: const Text('បន្ថែមតំបន់'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blue.shade800,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                    onPressed: _showAddAreaDialog,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: areas.isEmpty
+                ? Center(
+                    child: GlassContainer(
+                      padding: const EdgeInsets.all(10),
+                      child: const Text(
+                        'គ្មានតំបន់ដែលត្រូវបានរកឃើញ',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(10),
+                    itemCount: areas.length,
+                    itemBuilder: (context, index) {
+                      final a = areas[index];
+                      return GlassContainer(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  a['name'] ?? 'No name',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.white),
+                              onPressed: () => _showEditAreaDialog(a),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _showDeleteAreaConfirmation(a),
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -895,6 +1004,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     String? selectedCategoryId;
     String? selectedCategoryName;
+    String? selectedAreaId;
+    String? selectedAreaName;
     double? lat;
     double? lng;
     bool searchPlaceLoading = false;
@@ -1014,8 +1125,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: TextField(
                             controller: imageCtrl,
                             style: const TextStyle(color: Colors.white),
+                            maxLines: 3,
                             decoration: InputDecoration(
-                              labelText: 'URL រូបភាព',
+                              labelText: 'URL រូបភាព (ច្រើនជាមួយ comma)',
+                              hintText:
+                                  'https://example.com/img1.jpg, https://example.com/img2.jpg',
+                              hintStyle: TextStyle(
+                                color: Colors.white.withOpacity(0.4),
+                                fontSize: 12,
+                              ),
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -1047,7 +1165,73 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: const Text(
+                            'តំបន់',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
 
+                        const SizedBox(height: 8),
+                        Obx(() {
+                          final areasList = adminCtrl.areas;
+                          return DropdownButtonFormField<String>(
+                            value: selectedAreaId,
+                            dropdownColor: Colors.blue.shade800,
+                            style: const TextStyle(color: Colors.white),
+                            items: areasList
+                                .map(
+                                  (a) => DropdownMenuItem<String>(
+                                    value: a['id'] as String,
+                                    child: Text(a['name'] ?? ''),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (val) {
+                              setStateSB(() {
+                                selectedAreaId = val;
+                                final match = areasList.firstWhereOrNull(
+                                  (a) => a['id'] == val,
+                                );
+                                selectedAreaName = match != null
+                                    ? match['name'] as String?
+                                    : null;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'ជ្រើសរើសតំបន់',
+                              labelStyle: const TextStyle(
+                                color: Colors.white70,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white.withOpacity(0.1),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                         const SizedBox(height: 16),
                         Container(
                           padding: const EdgeInsets.all(10),
@@ -1522,12 +1706,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           final data = <String, dynamic>{
                             'title': titleCtrl.text.trim(),
                             'description': descCtrl.text.trim(),
-                            'imageUrl': imageCtrl.text.trim(),
+                            'imageUrl': imageCtrl.text
+                                .trim()
+                                .split(',')
+                                .map((e) => e.trim())
+                                .where((e) => e.isNotEmpty)
+                                .toList(), // Convert to list
                           };
                           if (selectedCategoryId != null)
                             data['categoryId'] = selectedCategoryId;
                           if (selectedCategoryName != null)
                             data['categoryName'] = selectedCategoryName;
+                          if (selectedAreaId != null)
+                            data['areaId'] = selectedAreaId;
+                          if (selectedAreaName != null)
+                            data['areaName'] = selectedAreaName;
 
                           final ok = await adminCtrl.addPlaceWithCoords(
                             data,
@@ -1561,7 +1754,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showEditPlaceDialog(Map<String, dynamic> place) {
     final titleCtrl = TextEditingController(text: place['title'] ?? '');
     final descCtrl = TextEditingController(text: place['description'] ?? '');
-    final imageCtrl = TextEditingController(text: place['imageUrl'] ?? '');
+    // Handle both String and List formats
+    final imageUrl = place['imageUrl'];
+    final imageUrlText = imageUrl is List
+        ? imageUrl.join(', ')
+        : (imageUrl ?? '');
+    final imageCtrl = TextEditingController(text: imageUrlText);
 
     Get.dialog(
       Dialog(
@@ -1709,6 +1907,75 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
+
+                        // Container(
+                        //   padding: const EdgeInsets.all(10),
+                        //   child: const Text(
+                        //     'តំបន់',
+                        //     style: TextStyle(
+                        //       color: Colors.white,
+                        //       fontWeight: FontWeight.w600,
+                        //     ),
+                        //   ),
+                        // ),
+                        const SizedBox(height: 8),
+                        Obx(() {
+                          final areasList = adminCtrl.areas;
+                          String? currentAreaId = place['areaId'] as String?;
+
+                          return DropdownButtonFormField<String>(
+                            value: currentAreaId,
+                            dropdownColor: Colors.blue.shade800,
+                            style: const TextStyle(color: Colors.white),
+                            items: areasList
+                                .map(
+                                  (a) => DropdownMenuItem<String>(
+                                    value: a['id'] as String,
+                                    child: Text(a['name'] ?? ''),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (val) {
+                              final match = areasList.firstWhereOrNull(
+                                (a) => a['id'] == val,
+                              );
+                              currentAreaId = val;
+                              // Update place data
+                              place['areaId'] = val;
+                              place['areaName'] = match != null
+                                  ? match['name'] as String?
+                                  : null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'ជ្រើសរើសតំបន់',
+                              labelStyle: const TextStyle(
+                                color: Colors.white70,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white.withOpacity(0.1),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -1732,11 +1999,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       padding: const EdgeInsets.all(10),
                       child: ElevatedButton(
                         onPressed: () async {
-                          final ok = await adminCtrl.updatePlace(place['id'], {
+                          final updateData = {
                             'title': titleCtrl.text.trim(),
                             'description': descCtrl.text.trim(),
-                            'imageUrl': imageCtrl.text.trim(),
-                          });
+                            'imageUrl': imageCtrl.text
+                                .trim()
+                                .split(',')
+                                .map((e) => e.trim())
+                                .where((e) => e.isNotEmpty)
+                                .toList(), // Convert to list
+                          };
+
+                          // Add area data if present
+                          if (place['areaId'] != null) {
+                            updateData['areaId'] = place['areaId'];
+                          }
+                          if (place['areaName'] != null) {
+                            updateData['areaName'] = place['areaName'];
+                          }
+
+                          final ok = await adminCtrl.updatePlace(
+                            place['id'],
+                            updateData,
+                          );
                           if (ok && ctx.mounted) {
                             Navigator.of(ctx, rootNavigator: true).pop();
                           }
@@ -2109,6 +2394,304 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onPressed: () {
                         Get.back();
                         adminCtrl.deleteCategory(category['id']);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('យល់ព្រម'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAddAreaDialog() {
+    final nameCtrl = TextEditingController();
+
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        child: GlassContainer(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  'បន្ថែមតំបន់ថ្មី',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: nameCtrl,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'ឈ្មោះតំបន់',
+                    labelStyle: const TextStyle(color: Colors.white70),
+                    prefixIcon: const Icon(
+                      Icons.location_city,
+                      color: Colors.white70,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.1),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.white.withOpacity(0.3),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.white.withOpacity(0.3),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: TextButton(
+                      onPressed: Get.back,
+                      child: const Text(
+                        'បោះបង់',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (nameCtrl.text.trim().isEmpty) {
+                          Get.snackbar(
+                            'Error',
+                            'Name is required',
+                            backgroundColor: Colors.red.shade100,
+                            colorText: Colors.red.shade900,
+                          );
+                          return;
+                        }
+                        final ok = await adminCtrl.addArea(
+                          nameCtrl.text.trim(),
+                        );
+                        if (ok && (Get.isDialogOpen ?? false)) {
+                          Get.back();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blue.shade800,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('រក្សាទុក'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showEditAreaDialog(Map<String, dynamic> area) {
+    final nameCtrl = TextEditingController(text: area['name'] ?? '');
+
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        child: GlassContainer(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  'កែសម្រួលតំបន់',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: nameCtrl,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'ឈ្មោះតំបន់',
+                    labelStyle: const TextStyle(color: Colors.white70),
+                    prefixIcon: const Icon(
+                      Icons.location_city,
+                      color: Colors.white70,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.1),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.white.withOpacity(0.3),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.white.withOpacity(0.3),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: TextButton(
+                      onPressed: Get.back,
+                      child: const Text(
+                        'បោះបង់',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (nameCtrl.text.trim().isEmpty) {
+                          Get.snackbar(
+                            'Error',
+                            'Name is required',
+                            backgroundColor: Colors.red.shade100,
+                            colorText: Colors.red.shade900,
+                          );
+                          return;
+                        }
+                        final ok = await adminCtrl.updateArea(area['id'], {
+                          'name': nameCtrl.text.trim(),
+                        });
+                        if (ok && (Get.isDialogOpen ?? false)) {
+                          Get.back();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blue.shade800,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('រក្សាទុក'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteAreaConfirmation(Map<String, dynamic> area) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        child: GlassContainer(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  'លុបតំបន់',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  'តើអ្នកប្រាកដជាចង់លុប "${area['name'] ?? 'តំបន់នេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: TextButton(
+                      onPressed: Get.back,
+                      child: const Text(
+                        'បោះបង់',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        adminCtrl.deleteArea(area['id']);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,

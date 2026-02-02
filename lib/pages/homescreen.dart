@@ -26,6 +26,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
   int _currentIndex = 0;
   String _search = '';
   String _selectedCategoryId = '';
+  String _selectedAreaId = '';
   late PageController _pageController;
   late Timer _timer;
   int _currentPage = 0;
@@ -248,7 +249,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           SliverAppBar(
-            expandedHeight: 180,
+            expandedHeight: 150,
             floating: false,
             pinned: true,
             backgroundColor: Colors.transparent,
@@ -282,7 +283,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'សួរស្ដី${user != null ? ', ${user.name}' : ''}!',
+                                        'សួស្តី${user != null ? ', ${user.name}' : ''}!',
                                         style: const TextStyle(
                                           color: Colors.white70,
                                           fontSize: 14,
@@ -290,7 +291,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                                       ),
                                       const SizedBox(height: 4),
                                       const Text(
-                                        'តោះទៅស្វែងរកកន្លែងថ្មីៗ!',
+                                        'ទៅស្វែងរកកន្លែងថ្មី!',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 24,
@@ -350,7 +351,11 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Category Filter
                   _buildCategoryChips(),
+                  const SizedBox(height: 12),
+                  // Area Filter (NEW)
+                  _buildAreaChips(),
                   const SizedBox(height: 24),
                   _buildFeaturedSection(uid),
                   const SizedBox(height: 24),
@@ -376,6 +381,71 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
     );
   }
 
+  // NEW METHOD: Build Area Filter Chips
+  Widget _buildAreaChips() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('areas')
+          .orderBy('name')
+          .snapshots(),
+      builder: (ctx, asnap) {
+        final allAreas = asnap.data?.docs ?? [];
+        // Filter to only show active areas
+        final areas = allAreas.where((area) {
+          final data = area.data() as Map<String, dynamic>;
+          return (data['status'] ?? 'active') == 'active';
+        }).toList();
+
+        if (areas.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'តំបន់',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.white.withOpacity(0.9),
+              ),
+            ),
+            // const SizedBox(height: 5),
+            SizedBox(
+              height: 48,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (c, i) {
+                  final area = areas[i];
+                  final selected = _selectedAreaId == area.id;
+                  return FilterChip(
+                    label: Text(area['name'] ?? ''),
+                    selected: selected,
+                    onSelected: (_) => setState(
+                      () => _selectedAreaId = selected ? '' : area.id,
+                    ),
+                    selectedColor: Colors.green.withOpacity(0.3),
+                    backgroundColor: Colors.white.withOpacity(0.1),
+                    labelStyle: TextStyle(
+                      color: selected ? Colors.black : Colors.green.shade900,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  );
+                },
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemCount: areas.length,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // UPDATED: Category Chips with label
   Widget _buildCategoryChips() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -392,39 +462,90 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
 
         if (cats.isEmpty) return const SizedBox.shrink();
 
-        return SizedBox(
-          height: 48,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (c, i) {
-              final cat = cats[i];
-              final selected = _selectedCategoryId == cat.id;
-              return FilterChip(
-                label: Text(cat['name'] ?? ''),
-                selected: selected,
-                onSelected: (_) => setState(
-                  () => _selectedCategoryId = selected ? '' : cat.id,
-                ),
-                selectedColor: Colors.white.withOpacity(0.3),
-                backgroundColor: Colors.white.withOpacity(0.1),
-                labelStyle: TextStyle(
-                  color: selected ? Colors.black : Colors.blue.shade900,
-                  fontWeight: FontWeight.w600,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-              );
-            },
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemCount: cats.length,
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'ប្រភេទ',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.white.withOpacity(0.9),
+              ),
+            ),
+            // const SizedBox(height: 5),
+            SizedBox(
+              height: 48,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (c, i) {
+                  final cat = cats[i];
+                  final selected = _selectedCategoryId == cat.id;
+                  return FilterChip(
+                    label: Text(cat['name'] ?? ''),
+                    selected: selected,
+                    onSelected: (_) => setState(
+                      () => _selectedCategoryId = selected ? '' : cat.id,
+                    ),
+                    selectedColor: Colors.white.withOpacity(0.3),
+                    backgroundColor: Colors.white.withOpacity(0.1),
+                    labelStyle: TextStyle(
+                      color: selected ? Colors.black : Colors.blue.shade900,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  );
+                },
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemCount: cats.length,
+              ),
+            ),
+          ],
         );
       },
     );
   }
 
+  // UPDATED: Filter logic to include area and enhanced search
+  bool _filterPlace(Map<String, dynamic> data) {
+    // Check if place is active
+    if ((data['status'] ?? 'active') != 'active') return false;
+
+    // Search filter - search in title, description, category name, and area name
+    if (_search.isNotEmpty) {
+      final title = (data['title'] ?? '').toString().toLowerCase();
+      final desc = (data['description'] ?? '').toString().toLowerCase();
+      final categoryName = (data['categoryName'] ?? '')
+          .toString()
+          .toLowerCase();
+      final areaName = (data['areaName'] ?? '').toString().toLowerCase();
+
+      if (!title.contains(_search) &&
+          !desc.contains(_search) &&
+          !categoryName.contains(_search) &&
+          !areaName.contains(_search)) {
+        return false;
+      }
+    }
+
+    // Category filter
+    if (_selectedCategoryId.isNotEmpty &&
+        data['categoryId'] != _selectedCategoryId) {
+      return false;
+    }
+
+    // Area filter
+    if (_selectedAreaId.isNotEmpty && data['areaId'] != _selectedAreaId) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // UPDATED: _buildFeaturedSection to use new filter
   Widget _buildFeaturedSection(String? uid) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -450,7 +571,6 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
             stream: FirebaseFirestore.instance
                 .collection('places')
                 .orderBy('createdAt', descending: true)
-                // .limit(10)
                 .snapshots(),
             builder: (ctx, snap) {
               if (!snap.hasData) {
@@ -465,22 +585,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
 
               final docs = snap.data!.docs.where((d) {
                 final data = d.data() as Map<String, dynamic>;
-                // Only show active places
-                if ((data['status'] ?? 'active') != 'active') return false;
-
-                if (_search.isNotEmpty) {
-                  final title = (data['title'] ?? '').toString().toLowerCase();
-                  final desc = (data['description'] ?? '')
-                      .toString()
-                      .toLowerCase();
-                  if (!title.contains(_search) && !desc.contains(_search))
-                    return false;
-                }
-                if (_selectedCategoryId.isNotEmpty &&
-                    data['categoryId'] != _selectedCategoryId) {
-                  return false;
-                }
-                return true;
+                return _filterPlace(data);
               }).toList();
 
               if (docs.isEmpty) {
@@ -531,10 +636,16 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
-                                NetworkImageWidget(
-                                  url: data['imageUrl'] ?? '',
-                                  fit: BoxFit.cover,
-                                ),
+                                () {
+                                  final imageUrl = data['imageUrl'];
+                                  final firstImage = imageUrl is List
+                                      ? (imageUrl.isNotEmpty ? imageUrl[0] : '')
+                                      : (imageUrl ?? '');
+                                  return NetworkImageWidget(
+                                    url: firstImage,
+                                    fit: BoxFit.cover,
+                                  );
+                                }(),
                                 Container(
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -550,25 +661,56 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                                 Positioned(
                                   left: 16,
                                   top: 16,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade900.withOpacity(
-                                        0.9,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      data['categoryName'] ?? 'Uncategorized',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      if (data['categoryName'] != null)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue.shade900
+                                                .withOpacity(0.9),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            data['categoryName'],
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      if (data['categoryName'] != null &&
+                                          data['areaName'] != null)
+                                        const SizedBox(width: 8),
+                                      if (data['areaName'] != null)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.shade900
+                                                .withOpacity(0.9),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            data['areaName'],
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
                                 Positioned(
@@ -652,6 +794,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
     );
   }
 
+  // UPDATED: _buildPopularPlaces to use new filter
   Widget _buildPopularPlaces(String? uid) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -672,20 +815,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
 
         final docs = snap.data!.docs.where((d) {
           final data = d.data() as Map<String, dynamic>;
-          // Only show active places
-          if ((data['status'] ?? 'active') != 'active') return false;
-
-          if (_search.isNotEmpty) {
-            final title = (data['title'] ?? '').toString().toLowerCase();
-            final desc = (data['description'] ?? '').toString().toLowerCase();
-            if (!title.contains(_search) && !desc.contains(_search))
-              return false;
-          }
-          if (_selectedCategoryId.isNotEmpty &&
-              data['categoryId'] != _selectedCategoryId) {
-            return false;
-          }
-          return true;
+          return _filterPlace(data);
         }).toList();
 
         if (docs.isEmpty) {
@@ -720,10 +850,16 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                       child: SizedBox(
                         width: 100,
                         height: 100,
-                        child: NetworkImageWidget(
-                          url: data['imageUrl'] ?? '',
-                          fit: BoxFit.cover,
-                        ),
+                        child: () {
+                          final imageUrl = data['imageUrl'];
+                          final firstImage = imageUrl is List
+                              ? (imageUrl.isNotEmpty ? imageUrl[0] : '')
+                              : (imageUrl ?? '');
+                          return NetworkImageWidget(
+                            url: firstImage,
+                            fit: BoxFit.cover,
+                          );
+                        }(),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -751,27 +887,52 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          if (data['categoryName'] != null) ...[
-                            const SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                data['categoryName'],
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              if (data['categoryName'] != null)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    data['categoryName'],
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ],
+                              if (data['categoryName'] != null &&
+                                  data['areaName'] != null)
+                                const SizedBox(width: 6),
+                              if (data['areaName'] != null)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    data['areaName'],
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
