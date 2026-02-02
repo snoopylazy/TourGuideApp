@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 /// Change colors here and they will apply to all pages
 class AppColors {
   // Primary gradient colors - Change these to customize your app theme
-  static const Color primaryLight = Color(0xFF42A5F5); // Blue 400
-  static const Color primaryMedium = Color(0xFF1E88E5); // Blue 600
-  static const Color primaryDark = Color(0xFF1565C0); // Blue 800
-  static const Color primaryDeep = Color(0xFF0D47A1); // Blue 900
+  static const Color primaryLight = Color(0xFF283593);  // Indigo 800 - starts richer
+  static const Color primaryMedium = Color(0xFF1A237E); // Indigo 900 - core logo depth
+  static const Color primaryDark = Color(0xFF0D1137);   // Deep navy-black blue
+  static const Color primaryDeep = Color(0xFF000814);   // Almost pure navy for strong contrast
 
   // Light mode colors
   static List<Color> get lightGradient => [
-        primaryLight,
-        primaryMedium,
-        primaryDark,
-      ];
+    primaryLight,
+    primaryMedium,
+    primaryDark,
+  ];
 
   // Dark mode colors (darker shades)
   static List<Color> get darkGradient => [
-        const Color(0xFF1A237E), // Indigo 900
-        const Color(0xFF283593), // Indigo 800
-        const Color(0xFF3949AB), // Indigo 700
-      ];
+    const Color(0xFF1A237E), // Indigo 900
+    const Color(0xFF283593), // Indigo 800
+    const Color(0xFF3949AB), // Indigo 700
+  ];
 
   // Text colors
   static const Color textLight = Colors.white;
@@ -43,4 +43,3 @@ class AppColors {
   static const Color accentOrange = Color(0xFFFF9800);
   static const Color accentAmber = Color(0xFFFFC107);
 }
-

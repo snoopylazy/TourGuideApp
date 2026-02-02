@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
 
     return Obx(
       () => GetMaterialApp(
-        title: 'WanderGuide - Cambodia',
+        title: 'Tour Guide - Cambodia',
         debugShowCheckedModeBanner: false,
         themeMode: themeController.themeMode.value,
         theme: ThemeData(
@@ -171,6 +171,7 @@ class MyApp extends StatelessWidget {
             fillColor: const Color(0xFF1E1E1E),
           ),
         ),
+        // Page routing
         initialRoute: '/splash',
         getPages: [
           GetPage(name: '/splash', page: () => const Splashscreen()),

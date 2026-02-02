@@ -274,15 +274,8 @@ class Placedetailscreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        GlassContainer(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                              const SizedBox(height: 10),
+                              Divider(height: 2),
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
@@ -294,7 +287,7 @@ class Placedetailscreen extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 8),
                                     const Text(
-                                      'Location',
+                                      'ទីតាំង',
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -304,67 +297,7 @@ class Placedetailscreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 20),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Latitude',
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.white.withOpacity(
-                                                0.7,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 6),
-                                          Text(
-                                            '${data['lat']}',
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Longitude',
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.white.withOpacity(
-                                                0.7,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 6),
-                                          Text(
-                                            '${data['lng']}',
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 5),
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 child: SizedBox(
@@ -380,7 +313,7 @@ class Placedetailscreen extends StatelessWidget {
                                       },
                                     ),
                                     icon: const Icon(Icons.map),
-                                    label: const Text('View on Map'),
+                                    label: const Text('មើលទីតាំង'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
                                       foregroundColor: AppColors.primaryDark,
@@ -396,6 +329,98 @@ class Placedetailscreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
+                        // GlassContainer(
+                        //   padding: const EdgeInsets.all(10),
+                        //   child: Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       Container(
+                        //         padding: const EdgeInsets.all(10),
+                        //         child: Row(
+                        //           children: [
+                        //             Icon(
+                        //               Icons.location_on,
+                        //               color: Colors.white,
+                        //               size: 22,
+                        //             ),
+                        //             const SizedBox(width: 8),
+                        //             const Text(
+                        //               'Location',
+                        //               style: TextStyle(
+                        //                 fontSize: 18,
+                        //                 fontWeight: FontWeight.bold,
+                        //                 color: Colors.white,
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ),
+                        // const SizedBox(height: 20),
+                        // Container(
+                        //   padding: const EdgeInsets.all(10),
+                        //   child: Row(
+                        //     children: [
+                        //       Expanded(
+                        //         child: Column(
+                        //           crossAxisAlignment:
+                        //               CrossAxisAlignment.start,
+                        //           children: [
+                        //             Text(
+                        //               'Latitude',
+                        //               style: TextStyle(
+                        //                 fontSize: 13,
+                        //                 color: Colors.white.withOpacity(
+                        //                   0.7,
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //             const SizedBox(height: 6),
+                        //             Text(
+                        //               '${data['lat']}',
+                        //               style: const TextStyle(
+                        //                 fontSize: 15,
+                        //                 fontWeight: FontWeight.w600,
+                        //                 color: Colors.white,
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ),
+                        //       Expanded(
+                        //         child: Column(
+                        //           crossAxisAlignment:
+                        //               CrossAxisAlignment.start,
+                        //           children: [
+                        //             Text(
+                        //               'Longitude',
+                        //               style: TextStyle(
+                        //                 fontSize: 13,
+                        //                 color: Colors.white.withOpacity(
+                        //                   0.7,
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //             const SizedBox(height: 6),
+                        //             Text(
+                        //               '${data['lng']}',
+                        //               style: const TextStyle(
+                        //                 fontSize: 15,
+                        //                 fontWeight: FontWeight.w600,
+                        //                 color: Colors.white,
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 20),
+
+                        //     ],
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 5),
                         GlassContainer(
                           padding: const EdgeInsets.all(10),
                           child: Column(
@@ -412,7 +437,7 @@ class Placedetailscreen extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 8),
                                     const Text(
-                                      'Reviews',
+                                      'បញ្ចេញមតិ',
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -452,6 +477,7 @@ class Placedetailscreen extends StatelessWidget {
     String? uid,
     ProfileController profileCtrl,
   ) {
+    // Fetch reviews from Firestore
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('places')
@@ -641,8 +667,9 @@ class Placedetailscreen extends StatelessWidget {
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(10),
-            child: Align(
-              alignment: Alignment.centerRight,
+            child: SizedBox(
+              width: double.infinity,
+              height: 54,
               child: ElevatedButton(
                 onPressed: () async {
                   final comment = commentController.text.trim();
@@ -680,6 +707,7 @@ class Placedetailscreen extends StatelessWidget {
                         Get.isRegistered<NotificationService>()
                         ? Get.find<NotificationService>()
                         : Get.put(NotificationService());
+
                     await notificationService.createReviewNotification(
                       reviewId: reviewRef.id,
                       placeId: placeId,
@@ -690,6 +718,7 @@ class Placedetailscreen extends StatelessWidget {
                     );
 
                     commentController.clear();
+
                     Get.snackbar(
                       'Success',
                       'Review added successfully',
@@ -713,14 +742,11 @@ class Placedetailscreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: const Text(
-                  'Submit Review',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  'បញ្ជូន',
+                  style: TextStyle(fontSize: 14),
                 ),
               ),
             ),

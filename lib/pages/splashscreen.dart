@@ -57,15 +57,11 @@ class _SplashscreenState extends State<Splashscreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDeep,
+      backgroundColor: AppColors.primaryMedium, // very dark navy
+      // or AppColors.primaryDark,                // slightly lighter navy-black
+      // or AppColors.primaryMedium,              // strong indigo
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppColors.lightGradient,
-          ),
-        ),
+        // no need for color: Colors.white here anymore
         child: Column(
           children: [
             Expanded(
@@ -77,44 +73,23 @@ class _SplashscreenState extends State<Splashscreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.explore,
-                              size: 60,
-                              color: AppColors.primaryDeep,
-                            ),
-                          ),
-                        ),
                         const SizedBox(height: 32),
-                        const Text(
-                          'Explore with Confidence',
+                        Text(
+                          'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
                           style: TextStyle(
-                            fontSize: 36,
+                            fontSize: 32,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: AppColors.textLight, // ← changed to white
                             letterSpacing: 1.2,
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Your local guide to unforgettable journeys',
+                        Text(
+                          'ទេសចរណ៍ឆ្លាតវៃ សម្រាប់អ្នក',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white70,
+                            color: AppColors
+                                .textLightSecondary, // ← white with opacity
                             letterSpacing: 0.5,
                           ),
                         ),
@@ -128,11 +103,11 @@ class _SplashscreenState extends State<Splashscreen>
               padding: const EdgeInsets.all(40.0),
               child: Column(
                 children: [
-                  const Text(
-                    'Preparing your journey...',
+                  Text(
+                    'កំពុងរៀបចំដំណើររបស់អ្នក...',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white70,
+                      color: AppColors.textLightSecondary, // ← white-ish
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -142,9 +117,9 @@ class _SplashscreenState extends State<Splashscreen>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: LinearProgressIndicator(
-                        backgroundColor: Colors.white.withOpacity(0.2),
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.white,
+                        backgroundColor: AppColors.textLight.withOpacity(0.15),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.textLight, // or accent color
                         ),
                         minHeight: 6,
                       ),

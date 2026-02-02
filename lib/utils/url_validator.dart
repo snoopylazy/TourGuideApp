@@ -1,3 +1,4 @@
+// Checks if a given URL is a valid image URL.
 bool isValidImageUrl(String? url) {
   if (url == null || url.trim().isEmpty) return false;
   final uri = Uri.tryParse(url);

@@ -114,7 +114,7 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                                   ),
                                   child: const Icon(
                                     Icons.location_on,
-                                    size: 28,
+                                    size: 20,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -164,90 +164,90 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Text(
-                        'Selected Coordinates',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white.withOpacity(0.9),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: GlassContainer(
-                            padding: const EdgeInsets.all(10),
-                            borderRadius: 12,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    'Latitude',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white.withOpacity(0.8),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    _picked.latitude.toStringAsFixed(6),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: GlassContainer(
-                            padding: const EdgeInsets.all(10),
-                            borderRadius: 12,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    'Longitude',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white.withOpacity(0.8),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    _picked.longitude.toStringAsFixed(6),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
+                    // Container(
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: Text(
+                    //     'Selected Coordinates',
+                    //     style: TextStyle(
+                    //       fontSize: 12,
+                    //       color: Colors.white.withOpacity(0.9),
+                    //       fontWeight: FontWeight.w600,
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 12),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: GlassContainer(
+                    //         padding: const EdgeInsets.all(10),
+                    //         borderRadius: 12,
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Container(
+                    //               padding: const EdgeInsets.all(10),
+                    //               child: Text(
+                    //                 'Latitude',
+                    //                 style: TextStyle(
+                    //                   fontSize: 11,
+                    //                   color: Colors.white.withOpacity(0.8),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             const SizedBox(height: 4),
+                    //             Container(
+                    //               padding: const EdgeInsets.all(10),
+                    //               child: Text(
+                    //                 _picked.latitude.toStringAsFixed(6),
+                    //                 style: const TextStyle(
+                    //                   fontSize: 14,
+                    //                   fontWeight: FontWeight.w600,
+                    //                   color: Colors.white,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     const SizedBox(width: 12),
+                    //     Expanded(
+                    //       child: GlassContainer(
+                    //         padding: const EdgeInsets.all(10),
+                    //         borderRadius: 12,
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Container(
+                    //               padding: const EdgeInsets.all(10),
+                    //               child: Text(
+                    //                 'Longitude',
+                    //                 style: TextStyle(
+                    //                   fontSize: 11,
+                    //                   color: Colors.white.withOpacity(0.8),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             const SizedBox(height: 4),
+                    //             Container(
+                    //               padding: const EdgeInsets.all(10),
+                    //               child: Text(
+                    //                 _picked.longitude.toStringAsFixed(6),
+                    //                 style: const TextStyle(
+                    //                   fontSize: 14,
+                    //                   fontWeight: FontWeight.w600,
+                    //                   color: Colors.white,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 16),
                     Row(
                       children: [
                         if (!viewOnly)

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/app_user.dart';
 
+// Gets and updates user profile information in Firestore
 class UserProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

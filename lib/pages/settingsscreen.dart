@@ -35,6 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _placesLoaded = false;
   bool _categoriesLoaded = false;
 
+  // initial setup when the screen starts.
   @override
   void initState() {
     super.initState();
@@ -48,6 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (uid != null) profileCtrl.loadProfile(uid);
   }
 
+  // dispose controllers when the screen is closed.
   @override
   void dispose() {
     nameController.dispose();
@@ -67,7 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               title: const Text(
-                'Settings',
+                'ការកំណត់',
                 style: TextStyle(color: AppColors.textLight),
               ),
               backgroundColor: Colors.transparent,
@@ -123,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               title: const Text(
-                'Settings',
+                'ការកំណត់',
                 style: TextStyle(color: AppColors.textLight),
               ),
               backgroundColor: Colors.transparent,
@@ -168,7 +170,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               title: const Text(
-                'Settings',
+                'ការកំណត់',
                 style: TextStyle(color: Colors.white),
               ),
               backgroundColor: Colors.transparent,
@@ -180,9 +182,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       unselectedLabelColor: Colors.white70,
                       indicatorColor: Colors.white,
                       tabs: const [
-                        Tab(text: 'Profile'),
-                        Tab(text: 'Places'),
-                        Tab(text: 'Categories'),
+                        Tab(text: 'ប្រវត្តិរូប'),
+                        Tab(text: 'ទីកន្លែង'),
+                        Tab(text: 'ប្រភេទ'),
                       ],
                     )
                   : null,
@@ -265,7 +267,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: const Text(
-                    'Profile Information',
+                    'ព័ត៌មានប្រវត្តិរូប',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -366,12 +368,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           'name': nameController.text.trim(),
                           'profileImageUrl': imageUrlController.text.trim(),
                         });
-                        Get.snackbar(
-                          'Success',
-                          'Profile updated',
-                          backgroundColor: Colors.green.shade100,
-                          colorText: Colors.green.shade900,
-                        );
+                        // Get.snackbar(
+                        //   'Success',
+                        //   'Profile updated',
+                        //   backgroundColor: Colors.blue.shade100,
+                        //   colorText: Colors.blue.shade900,
+                        // );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -382,7 +384,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         elevation: 0,
                       ),
                       child: const Text(
-                        'Save Profile Changes',
+                        'រក្សាទុកការផ្លាស់ប្តូរ',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -406,7 +408,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: const Text(
-                    'Change Password',
+                    'ផ្លាស់ប្តូរពាក្យសម្ងាត់',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -536,7 +538,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     height: 52,
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.password),
-                      label: const Text('Update Password'),
+                      label: const Text('រក្សាទុកការផ្លាស់ប្តូរ'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.red.shade700,
@@ -579,8 +581,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Get.snackbar(
                             'Success',
                             'Password updated successfully',
-                            backgroundColor: Colors.green.shade100,
-                            colorText: Colors.green.shade900,
+                            backgroundColor: Colors.blue.shade100,
+                            colorText: Colors.blue.shade900,
                           );
                           currentPasswordController.clear();
                           newPasswordController.clear();
@@ -608,7 +610,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: OutlinedButton.icon(
               icon: const Icon(Icons.logout, color: Colors.white),
               label: const Text(
-                'Log Out',
+                'ចាកចេញ',
                 style: TextStyle(color: Colors.white),
               ),
               style: OutlinedButton.styleFrom(
@@ -653,7 +655,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 height: 52,
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.add_location_alt),
-                  label: const Text('Add Place'),
+                  label: const Text('បន្ថែមទីកន្លែង'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.blue.shade800,
@@ -675,7 +677,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         child: const Text(
-                          'No places found',
+                          'គ្មានទីកន្លែងដែលត្រូវបានរកឃើញ',
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
@@ -781,7 +783,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   height: 52,
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Category'),
+                    label: const Text('បន្ថែមប្រភេទ'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.blue.shade800,
@@ -802,7 +804,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: GlassContainer(
                       padding: const EdgeInsets.all(10),
                       child: const Text(
-                        'No categories found',
+                        'គ្មានប្រភេទដែលត្រូវបានរកឃើញ',
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
@@ -911,7 +913,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: const Text(
-                    'Add Place',
+                    'បន្ថែមទីកន្លែង',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -932,7 +934,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             controller: titleCtrl,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Title',
+                              labelText: 'ចំណងជើង',
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -972,7 +974,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             controller: descCtrl,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Description',
+                              labelText: 'ការពិពណ៌នា',
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -1013,7 +1015,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             controller: imageCtrl,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Image URL',
+                              labelText: 'URL រូបភាព',
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -1050,7 +1052,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           child: const Text(
-                            'Category',
+                            'ប្រភេទ',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -1085,7 +1087,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               });
                             },
                             decoration: InputDecoration(
-                              labelText: 'Select Category',
+                              labelText: 'ជ្រើសរើសប្រភេទ',
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -1117,7 +1119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           child: const Text(
-                            'Search place',
+                            'ស្វែងរកទីកន្លែង',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -1339,7 +1341,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           child: const Text(
-                            'Or enter coordinates manually',
+                            'ឬបញ្ចូល កូអរដោនេ',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -1462,7 +1464,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: TextButton(
                         onPressed: Get.back,
                         child: const Text(
-                          'Cancel',
+                          'បោះបង់',
                           style: TextStyle(color: Colors.white70),
                         ),
                       ),
@@ -1543,7 +1545,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Save'),
+                        child: const Text('រក្សាទុក'),
                       ),
                     ),
                   ],
@@ -1574,7 +1576,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: const Text(
-                    'Edit Place',
+                    'កែសម្រួលទីកន្លែង',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -1595,7 +1597,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             controller: titleCtrl,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Title',
+                              labelText: 'ចំណងជើង',
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -1636,7 +1638,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             style: const TextStyle(color: Colors.white),
                             maxLines: 3,
                             decoration: InputDecoration(
-                              labelText: 'Description',
+                              labelText: 'ការពិពណ៌នា',
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -1675,7 +1677,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             controller: imageCtrl,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Image URL',
+                              labelText: 'URL រូបភាព',
                               labelStyle: const TextStyle(
                                 color: Colors.white70,
                               ),
@@ -1720,7 +1722,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: TextButton(
                         onPressed: Get.back,
                         child: const Text(
-                          'Cancel',
+                          'បោះបង់',
                           style: TextStyle(color: Colors.white70),
                         ),
                       ),
@@ -1746,7 +1748,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Save'),
+                        child: const Text('រក្សាទុក'),
                       ),
                     ),
                   ],
@@ -1774,7 +1776,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: const Text(
-                  'Add Category',
+                  'បន្ថែមប្រភេទថ្មី',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -1789,7 +1791,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   controller: nameCtrl,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    labelText: 'Category Name',
+                    labelText: 'ឈ្មោះប្រភេទ',
                     labelStyle: const TextStyle(color: Colors.white70),
                     prefixIcon: const Icon(
                       Icons.category,
@@ -1828,7 +1830,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: TextButton(
                       onPressed: Get.back,
                       child: const Text(
-                        'Cancel',
+                        'បោះបង់',
                         style: TextStyle(color: Colors.white70),
                       ),
                     ),
@@ -1861,7 +1863,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Save'),
+                      child: const Text('រក្សាទុក'),
                     ),
                   ),
                 ],
@@ -1885,12 +1887,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Edit Category',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  'កែសម្រួលប្រភេទ',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -1900,7 +1905,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   controller: nameCtrl,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    labelText: 'Category Name',
+                    labelText: 'ឈ្មោះប្រភេទ',
                     labelStyle: const TextStyle(color: Colors.white70),
                     prefixIcon: const Icon(
                       Icons.category,
@@ -1939,7 +1944,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: TextButton(
                       onPressed: Get.back,
                       child: const Text(
-                        'Cancel',
+                        'បោះបង់',
                         style: TextStyle(color: Colors.white70),
                       ),
                     ),
@@ -1972,7 +1977,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Save'),
+                      child: const Text('រក្សាទុក'),
                     ),
                   ),
                 ],
@@ -1997,7 +2002,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: const Text(
-                  'Delete Place',
+                  'លុបទីកន្លែង',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -2009,7 +2014,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  'Are you sure you want to delete "${place['title'] ?? 'this place'}"? This action cannot be undone.',
+                  'តើអ្នកប្រាកដជាចង់លុប "${place['title'] ?? 'ទីកន្លែងនេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
@@ -2022,7 +2027,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: TextButton(
                       onPressed: Get.back,
                       child: const Text(
-                        'Cancel',
+                        'បោះបង់',
                         style: TextStyle(color: Colors.white70),
                       ),
                     ),
@@ -2042,7 +2047,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Delete'),
+                      child: const Text('យល់ព្រម'),
                     ),
                   ),
                 ],
@@ -2067,7 +2072,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: const Text(
-                  'Delete Category',
+                  'លុបប្រភេទ',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -2079,7 +2084,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  'Are you sure you want to delete "${category['name'] ?? 'this category'}"? This action cannot be undone.',
+                  'តើអ្នកប្រាកដជាចង់លុប "${category['name'] ?? 'ប្រភេទនេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
@@ -2092,7 +2097,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: TextButton(
                       onPressed: Get.back,
                       child: const Text(
-                        'Cancel',
+                        'បោះបង់',
                         style: TextStyle(color: Colors.white70),
                       ),
                     ),
@@ -2112,7 +2117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Delete'),
+                      child: const Text('យល់ព្រម'),
                     ),
                   ),
                 ],

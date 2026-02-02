@@ -47,7 +47,7 @@ class Registerscreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Join the Journey',
+                          'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class Registerscreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Start exploring the world's hidden gems today.",
+                          "ចាប់ផ្តើមការស្វែងរកភាពល្អនៃពិភពលោក។",
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.white.withOpacity(0.9),
@@ -77,7 +77,7 @@ class Registerscreen extends StatelessWidget {
                           onChanged: (v) => name.value = v,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            hintText: 'John Doe',
+                            hintText: 'Snoopy',
                             hintStyle: TextStyle(
                               color: Colors.white.withOpacity(0.5),
                             ),
@@ -122,7 +122,7 @@ class Registerscreen extends StatelessWidget {
                           onChanged: (v) => email.value = v,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            hintText: 'name@example.com',
+                            hintText: 'snoopier@example.com',
                             hintStyle: TextStyle(
                               color: Colors.white.withOpacity(0.5),
                             ),

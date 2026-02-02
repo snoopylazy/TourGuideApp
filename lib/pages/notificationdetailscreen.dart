@@ -10,10 +10,7 @@ import '../controllers/admin_controller.dart';
 class NotificationDetailScreen extends StatelessWidget {
   final NotificationModel notification;
 
-  const NotificationDetailScreen({
-    super.key,
-    required this.notification,
-  });
+  const NotificationDetailScreen({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +82,9 @@ class NotificationDetailScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              DateFormat('MMM dd, yyyy • hh:mm a')
-                                  .format(notification.createdAt),
+                              DateFormat(
+                                'MMM dd, yyyy • hh:mm a',
+                              ).format(notification.createdAt),
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey.shade600,
@@ -100,10 +98,7 @@ class NotificationDetailScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(
                     notification.message,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
                   ),
                 ],
               ),
@@ -258,9 +253,9 @@ class NotificationDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade50,
+                  color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.green.shade200),
+                  border: Border.all(color: Colors.blue.shade200),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +264,7 @@ class NotificationDetailScreen extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.admin_panel_settings,
-                          color: Colors.green.shade700,
+                          color: Colors.blue.shade700,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
@@ -287,7 +282,7 @@ class NotificationDetailScreen extends StatelessWidget {
                       notification.adminResponse!,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.green.shade900,
+                        color: Colors.blue.shade900,
                         height: 1.5,
                       ),
                     ),
@@ -349,97 +344,102 @@ class NotificationDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Obx(() => SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: isSubmitting.value
-                            ? null
-                            : () async {
-                                if (responseController.text.trim().isEmpty) {
-                                  Get.snackbar(
-                                    'Error',
-                                    'Response cannot be empty',
-                                  );
-                                  return;
-                                }
-
-                                isSubmitting.value = true;
-                                try {
-                                  final notificationService =
-                                      Get.find<NotificationService>();
-                                  await notificationService
-                                      .createAdminResponseNotification(
-                                    reviewId: notification.reviewId ?? '',
-                                    placeId: notification.placeId ?? '',
-                                    placeTitle: notification.placeTitle ?? '',
-                                    userId: notification.userId ?? '',
-                                    adminResponse: responseController.text.trim(),
-                                  );
-
-                                  // Update review with admin response
-                                  if (notification.placeId != null &&
-                                      notification.reviewId != null) {
-                                    await FirebaseFirestore.instance
-                                        .collection('places')
-                                        .doc(notification.placeId)
-                                        .collection('reviews')
-                                        .doc(notification.reviewId)
-                                        .update({
-                                      'adminResponse':
-                                          responseController.text.trim(),
-                                      'adminRespondedAt':
-                                          FieldValue.serverTimestamp(),
-                                    });
+                    Obx(
+                      () => SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: isSubmitting.value
+                              ? null
+                              : () async {
+                                  if (responseController.text.trim().isEmpty) {
+                                    Get.snackbar(
+                                      'Error',
+                                      'Response cannot be empty',
+                                    );
+                                    return;
                                   }
 
-                                  Get.snackbar(
-                                    'Success',
-                                    'Response sent to user',
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.green.shade100,
-                                    colorText: Colors.green.shade900,
-                                  );
-                                  Get.back();
-                                } catch (e) {
-                                  Get.snackbar(
-                                    'Error',
-                                    'Failed to send response: $e',
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.red.shade100,
-                                    colorText: Colors.red.shade900,
-                                  );
-                                } finally {
-                                  isSubmitting.value = false;
-                                }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade900,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                                  isSubmitting.value = true;
+                                  try {
+                                    final notificationService =
+                                        Get.find<NotificationService>();
+                                    await notificationService
+                                        .createAdminResponseNotification(
+                                          reviewId: notification.reviewId ?? '',
+                                          placeId: notification.placeId ?? '',
+                                          placeTitle:
+                                              notification.placeTitle ?? '',
+                                          userId: notification.userId ?? '',
+                                          adminResponse: responseController.text
+                                              .trim(),
+                                        );
+
+                                    // Update review with admin response
+                                    if (notification.placeId != null &&
+                                        notification.reviewId != null) {
+                                      await FirebaseFirestore.instance
+                                          .collection('places')
+                                          .doc(notification.placeId)
+                                          .collection('reviews')
+                                          .doc(notification.reviewId)
+                                          .update({
+                                            'adminResponse': responseController
+                                                .text
+                                                .trim(),
+                                            'adminRespondedAt':
+                                                FieldValue.serverTimestamp(),
+                                          });
+                                    }
+
+                                    Get.snackbar(
+                                      'Success',
+                                      'Response sent to user',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.blue.shade100,
+                                      colorText: Colors.blue.shade900,
+                                    );
+                                    Get.back();
+                                  } catch (e) {
+                                    Get.snackbar(
+                                      'Error',
+                                      'Failed to send response: $e',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.red.shade100,
+                                      colorText: Colors.red.shade900,
+                                    );
+                                  } finally {
+                                    isSubmitting.value = false;
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue.shade900,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                        ),
-                        child: isSubmitting.value
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
+                          child: isSubmitting.value
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : const Text(
+                                  'Send Response',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
                                   ),
                                 ),
-                              )
-                            : const Text(
-                                'Send Response',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 ),
               ),
@@ -450,4 +450,3 @@ class NotificationDetailScreen extends StatelessWidget {
     );
   }
 }
-

@@ -40,32 +40,32 @@ class Loginscreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 10),
                       Container(
-                        width: 64,
-                        height: 70,
+                        width: 150,
+                        height: 150,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.3),
                           shape: BoxShape.circle,
                         ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.explore,
-                            size: 32,
-                            color: Colors.white,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/logo1.png',
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 10),
                       const Text(
-                        'Welcome Back',
+                        'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Sign in to continue your adventure and\ndiscover new places',
+                        'ចូលទៅក្នុងគណនីរបស់អ្នកដើម្បីចាប់ផ្តើមការផ្សងព្រេងថ្មីៗ!',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
@@ -78,7 +78,7 @@ class Loginscreen extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'Email',
+                          'Email or Username',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -211,7 +211,7 @@ class Loginscreen extends StatelessWidget {
                             );
                           },
                           child: Text(
-                            'Forgot?',
+                            'Forget Password?',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,

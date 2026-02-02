@@ -122,7 +122,8 @@ class _AdminscreenState extends State<Adminscreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      (notification.userName?.isNotEmpty ?? false)
+                                      (notification.userName?.isNotEmpty ??
+                                              false)
                                           ? notification.userName!
                                           : notification.title,
                                       style: TextStyle(
@@ -339,17 +340,17 @@ class _AdminscreenState extends State<Adminscreen> {
                             ? Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: Colors.green.shade50,
+                                  color: Colors.blue.shade50,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: Colors.green.shade200,
+                                    color: Colors.blue.shade200,
                                   ),
                                 ),
                                 child: Row(
                                   children: [
                                     Icon(
                                       Icons.check_circle,
-                                      color: Colors.green.shade700,
+                                      color: Colors.blue.shade700,
                                     ),
                                     const SizedBox(width: 8),
                                     Expanded(
@@ -686,8 +687,8 @@ class _AdminscreenState extends State<Adminscreen> {
                                     'Success',
                                     'Admin logged in',
                                     snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.green.shade100,
-                                    colorText: Colors.green.shade900,
+                                    backgroundColor: Colors.blue.shade100,
+                                    colorText: Colors.blue.shade900,
                                   );
                                   admin.fetchPlaces();
                                   admin.fetchCategories();
@@ -857,18 +858,18 @@ class _AdminscreenState extends State<Adminscreen> {
                                         ? Container(
                                             padding: const EdgeInsets.all(12),
                                             decoration: BoxDecoration(
-                                              color: Colors.green.shade50,
+                                              color: Colors.blue.shade50,
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                               border: Border.all(
-                                                color: Colors.green.shade200,
+                                                color: Colors.blue.shade200,
                                               ),
                                             ),
                                             child: Row(
                                               children: [
                                                 Icon(
                                                   Icons.check_circle,
-                                                  color: Colors.green.shade700,
+                                                  color: Colors.blue.shade700,
                                                 ),
                                                 const SizedBox(width: 8),
                                                 const Expanded(
@@ -999,11 +1000,12 @@ class _AdminscreenState extends State<Adminscreen> {
                                             print(
                                               'placeData before addPlaceWithCoords: $placeData',
                                             );
-                                            final ok = await admin.addPlaceWithCoords(
-                                              placeData,
-                                              pickedLat,
-                                              pickedLng,
-                                            );
+                                            final ok = await admin
+                                                .addPlaceWithCoords(
+                                                  placeData,
+                                                  pickedLat,
+                                                  pickedLng,
+                                                );
                                             if (ok) {
                                               title.value = '';
                                               imageUrl.value = '';
@@ -1176,7 +1178,8 @@ class _AdminscreenState extends State<Adminscreen> {
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blue.shade900,
+                                          backgroundColor:
+                                              Colors.blue.shade900,
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 24,
                                             vertical: 20,
@@ -1250,7 +1253,7 @@ class _AdminscreenState extends State<Adminscreen> {
                                                                     'active') ==
                                                                 'active'
                                                             ? Colors
-                                                                  .green
+                                                                  .blue
                                                                   .shade100
                                                             : Colors
                                                                   .red
@@ -1273,7 +1276,7 @@ class _AdminscreenState extends State<Adminscreen> {
                                                                       'active') ==
                                                                   'active'
                                                               ? Colors
-                                                                    .green
+                                                                    .blue
                                                                     .shade800
                                                               : Colors
                                                                     .red
@@ -1474,7 +1477,7 @@ class _AdminscreenState extends State<Adminscreen> {
                                                                         'active') ==
                                                                     'active'
                                                                 ? Colors
-                                                                      .green
+                                                                      .blue
                                                                       .shade100
                                                                 : Colors
                                                                       .red
@@ -1498,7 +1501,7 @@ class _AdminscreenState extends State<Adminscreen> {
                                                                           'active') ==
                                                                       'active'
                                                                   ? Colors
-                                                                        .green
+                                                                        .blue
                                                                         .shade800
                                                                   : Colors
                                                                         .red

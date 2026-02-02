@@ -32,7 +32,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
   int _totalPages = 1;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
-  int _previousUnreadCount = 0;
+  // int _previousUnreadCount = 0;
 
   @override
   void initState() {
@@ -54,25 +54,25 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
     });
 
     // ADD: Watch unreadCount and play sound only when it INCREASES
-    final notificationCtrl = Get.find<NotificationController>();
-    _previousUnreadCount = notificationCtrl.unreadCount.value;
+    // final notificationCtrl = Get.find<NotificationController>();
+    // _previousUnreadCount = notificationCtrl.unreadCount.value;
 
-    ever(notificationCtrl.unreadCount, (int newCount) {
-      if (newCount > _previousUnreadCount && _previousUnreadCount >= 0) {
-        _playNotificationSound();
-      }
-      _previousUnreadCount = newCount;
-    });
+    // ever(notificationCtrl.unreadCount, (int newCount) {
+    //   if (newCount > _previousUnreadCount && _previousUnreadCount >= 0) {
+    //     _playNotificationSound();
+    //   }
+    //   _previousUnreadCount = newCount;
+    // });
   }
 
   // ADD: Helper method to play the sound
-  Future<void> _playNotificationSound() async {
-    try {
-      await _audioPlayer.play(AssetSource('alarm.mp3'));
-    } catch (e) {
-      debugPrint('Failed to play notification sound: $e');
-    }
-  }
+  // Future<void> _playNotificationSound() async {
+  //   try {
+  //     await _audioPlayer.play(AssetSource('alarm.mp3'));
+  //   } catch (e) {
+  //     debugPrint('Failed to play notification sound: $e');
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -103,7 +103,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 foregroundColor: Colors.white,
                 elevation: 0,
                 title: Text(
-                  _currentIndex == 1 ? 'My Favorites' : 'My Profile',
+                  _currentIndex == 1 ? 'ការពេញចិត្ត' : 'ប្រវត្តិរូប',
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -113,12 +113,12 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                     ? [
                         IconButton(
                           icon: const Icon(Icons.settings),
-                          tooltip: 'Settings',
+                          tooltip: 'ការកំណត់',
                           onPressed: () => Get.toNamed('/settings'),
                         ),
                         IconButton(
                           icon: const Icon(Icons.logout),
-                          tooltip: 'Logout',
+                          tooltip: 'ចាកចេញ',
                           onPressed: () => auth.logout(),
                         ),
                       ]
@@ -141,7 +141,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 Icons.explore,
                 color: AppColors.textLight,
               ),
-              label: 'Explore',
+              label: 'ទំព័រដើម',
             ),
             NavigationDestination(
               icon: Icon(
@@ -152,7 +152,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 Icons.favorite,
                 color: AppColors.textLight,
               ),
-              label: 'Favorites',
+              label: 'ពេញចិត្ត',
             ),
             NavigationDestination(
               icon: Icon(
@@ -163,7 +163,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 Icons.person,
                 color: AppColors.textLight,
               ),
-              label: 'Profile',
+              label: 'ប្រវត្តិរូប',
             ),
           ],
         ),
@@ -282,7 +282,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Hello${user != null ? ', ${user.name}' : ''}! 👋',
+                                        'សួរស្ដី${user != null ? ', ${user.name}' : ''}!',
                                         style: const TextStyle(
                                           color: Colors.white70,
                                           fontSize: 14,
@@ -290,7 +290,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                                       ),
                                       const SizedBox(height: 4),
                                       const Text(
-                                        'Discover Amazing Places',
+                                        'តោះទៅស្វែងរកកន្លែងថ្មីៗ!',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 24,
@@ -327,7 +327,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                         Icons.search,
                         color: Colors.white70,
                       ),
-                      hintText: 'Search destinations...',
+                      hintText: 'ស្វែងរកកន្លែង...',
                       hintStyle: TextStyle(
                         color: Colors.white.withOpacity(0.5),
                       ),
@@ -355,7 +355,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                   _buildFeaturedSection(uid),
                   const SizedBox(height: 24),
                   Text(
-                    'Popular Near You',
+                    'ទេសចរណ៍ពេញនិយម',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -433,7 +433,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Featured Places',
+              'កន្លែងពិសេស',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -450,7 +450,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
             stream: FirebaseFirestore.instance
                 .collection('places')
                 .orderBy('createdAt', descending: true)
-                .limit(5)
+                // .limit(10)
                 .snapshots(),
             builder: (ctx, snap) {
               if (!snap.hasData) {
@@ -486,7 +486,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               if (docs.isEmpty) {
                 return Center(
                   child: Text(
-                    'No featured places',
+                    'គ្មានកន្លែងពិសេសទេ',
                     style: TextStyle(color: Colors.grey.shade500),
                   ),
                 );
@@ -694,7 +694,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               child: Padding(
                 padding: const EdgeInsets.all(40.0),
                 child: Text(
-                  'No places found',
+                  'គ្មានកន្លែងពេញនិយមទេ',
                   style: TextStyle(color: Colors.grey.shade500),
                 ),
               ),
@@ -824,7 +824,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
 
       final user = profileCtrl.user.value;
       if (user == null) {
-        return const Center(child: Text('No profile loaded'));
+        return const Center(child: Text('គ្មានប្រើប្រាស់ដែលផ្ទៀងផ្ទាត់ទេ'));
       }
 
       final nameController = TextEditingController(text: user.name);
@@ -981,7 +981,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                   ),
                 ),
                 child: const Text(
-                  'Save Profile',
+                  'រក្សាទុកការផ្លាស់ប្តូរ',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -1011,7 +1011,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
         clipBehavior: Clip.none,
         children: [
           IconButton(
-            tooltip: 'Review notifications',
+            tooltip: 'សារថ្មីៗ',
             icon: const Icon(Icons.notifications_outlined, color: Colors.white),
             onPressed: () => _showAdminReviewNotificationsDialog(),
           ),

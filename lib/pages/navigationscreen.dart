@@ -47,6 +47,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
   final Map<RouteMode, _RouteData> _routes = {};
   bool _loadingRoutes = true;
 
+  int _calcDuration(double distanceMeters, double speedKmH) {
+    return (distanceMeters / (speedKmH * 1000 / 3600)).round();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -121,13 +125,105 @@ class _NavigationScreenState extends State<NavigationScreen> {
             Get.snackbar(
               'Congratulations!',
               'You have arrived at your destination!',
-              backgroundColor: Colors.green,
+              backgroundColor: Colors.blue,
               colorText: Colors.white,
               duration: const Duration(seconds: 5),
             );
           }
         });
   }
+
+  // Future<void> _getRoute() async {
+  //   if (_currentPosition == null) return;
+
+  //   final start =
+  //       '${_currentPosition!.longitude},${_currentPosition!.latitude}';
+  //   final end = '${_destination.longitude},${_destination.latitude}';
+  //   const base = 'http://router.project-osrm.org/route/v1';
+  //   const opts = 'overview=full&geometries=polyline';
+  //   final polylinePoints = PolylinePoints();
+
+  //   setState(() => _loadingRoutes = true);
+
+  //   Future<_RouteData?> fetchProfile(String profile) async {
+  //     final url = Uri.parse('$base/$profile/$start;$end?$opts');
+  //     try {
+  //       final response = await http.get(url);
+  //       if (response.statusCode != 200) return null;
+  //       final json = jsonDecode(response.body);
+  //       if (json['routes']?.isEmpty ?? true) return null;
+  //       final r = json['routes'][0];
+  //       final geometry = r['geometry'] as String;
+  //       final duration = (r['duration'] as num).toDouble();
+  //       final distance = (r['distance'] as num).toDouble();
+  //       final result = polylinePoints.decodePolyline(geometry);
+  //       final points = result
+  //           .map((point) => LatLng(point.latitude, point.longitude))
+  //           .toList();
+  //       return _RouteData(
+  //         durationSeconds: duration.round(),
+  //         distanceMeters: distance,
+  //         points: points,
+  //       );
+  //     } catch (_) {
+  //       return null;
+  //     }
+  //   }
+
+  //   try {
+  //     final footFuture = fetchProfile('foot');
+  //     final drivingFuture = fetchProfile('driving');
+  //     final bikeFuture = fetchProfile('bike');
+
+  //     final foot = await footFuture;
+  //     final driving = await drivingFuture;
+  //     final bike = await bikeFuture;
+
+  //     if (!mounted) return;
+  //     setState(() {
+  //       _loadingRoutes = false;
+  //       _routes.clear();
+  //       if (foot != null) {
+  //         _routes[RouteMode.walk] = foot;
+  //       }
+  //       if (driving != null) {
+  //         _routes[RouteMode.car] = driving;
+  //         // Motor: use bike route when available (closer to motorcycle); else driving × 1.1
+  //         if (bike != null) {
+  //           _routes[RouteMode.motor] = bike;
+  //         } else {
+  //           final motorDuration = (driving.durationSeconds * 1.1).round();
+  //           _routes[RouteMode.motor] = _RouteData(
+  //             durationSeconds: motorDuration,
+  //             distanceMeters: driving.distanceMeters,
+  //             points: driving.points,
+  //           );
+  //         }
+  //         // Bus: ~35% slower than car (stops, traffic)
+  //         final busDuration = (driving.durationSeconds * 1.35).round();
+  //         _routes[RouteMode.bus] = _RouteData(
+  //           durationSeconds: busDuration,
+  //           distanceMeters: driving.distanceMeters,
+  //           points: driving.points,
+  //         );
+  //       }
+  //       if (_routes.isNotEmpty && !_routes.containsKey(_selectedMode)) {
+  //         _selectedMode = RouteMode.car;
+  //         if (!_routes.containsKey(_selectedMode)) {
+  //           _selectedMode = _routes.keys.first;
+  //         }
+  //       }
+  //       _applySelectedRoute();
+  //     });
+
+  //     if (_routes.isEmpty) {
+  //       Get.snackbar('Route Error', 'Could not fetch any route');
+  //     }
+  //   } catch (e) {
+  //     if (mounted) setState(() => _loadingRoutes = false);
+  //     Get.snackbar('Network Error', 'Failed to load route: $e');
+  //   }
+  // }
 
   Future<void> _getRoute() async {
     if (_currentPosition == null) return;
@@ -141,23 +237,26 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     setState(() => _loadingRoutes = true);
 
-    Future<_RouteData?> fetchProfile(String profile) async {
-      final url = Uri.parse('$base/$profile/$start;$end?$opts');
+    Future<_RouteData?> fetchDrivingRoute() async {
+      final url = Uri.parse('$base/driving/$start;$end?$opts');
       try {
         final response = await http.get(url);
         if (response.statusCode != 200) return null;
+
         final json = jsonDecode(response.body);
         if (json['routes']?.isEmpty ?? true) return null;
+
         final r = json['routes'][0];
         final geometry = r['geometry'] as String;
-        final duration = (r['duration'] as num).toDouble();
         final distance = (r['distance'] as num).toDouble();
+
         final result = polylinePoints.decodePolyline(geometry);
         final points = result
-            .map((point) => LatLng(point.latitude, point.longitude))
+            .map((p) => LatLng(p.latitude, p.longitude))
             .toList();
+
         return _RouteData(
-          durationSeconds: duration.round(),
+          durationSeconds: 0, // will be recalculated
           distanceMeters: distance,
           points: points,
         );
@@ -167,57 +266,55 @@ class _NavigationScreenState extends State<NavigationScreen> {
     }
 
     try {
-      final footFuture = fetchProfile('foot');
-      final drivingFuture = fetchProfile('driving');
-      final bikeFuture = fetchProfile('bike');
-
-      final foot = await footFuture;
-      final driving = await drivingFuture;
-      final bike = await bikeFuture;
+      final driving = await fetchDrivingRoute();
 
       if (!mounted) return;
+
       setState(() {
         _loadingRoutes = false;
         _routes.clear();
-        if (foot != null) {
-          _routes[RouteMode.walk] = foot;
-        }
+
         if (driving != null) {
-          _routes[RouteMode.car] = driving;
-          // Motor: use bike route when available (closer to motorcycle); else driving × 1.1
-          if (bike != null) {
-            _routes[RouteMode.motor] = bike;
-          } else {
-            final motorDuration = (driving.durationSeconds * 1.1).round();
-            _routes[RouteMode.motor] = _RouteData(
-              durationSeconds: motorDuration,
-              distanceMeters: driving.distanceMeters,
-              points: driving.points,
-            );
-          }
-          // Bus: ~35% slower than car (stops, traffic)
-          final busDuration = (driving.durationSeconds * 1.35).round();
+          final distance = driving.distanceMeters;
+
+          _routes[RouteMode.walk] = _RouteData(
+            durationSeconds: _calcDuration(distance, 4), // 4 km/h
+            distanceMeters: distance,
+            points: driving.points,
+          );
+
+          _routes[RouteMode.motor] = _RouteData(
+            durationSeconds: _calcDuration(distance, 30), // motorbike
+            distanceMeters: distance,
+            points: driving.points,
+          );
+
+          _routes[RouteMode.car] = _RouteData(
+            durationSeconds: _calcDuration(distance, 35), // city car
+            distanceMeters: distance,
+            points: driving.points,
+          );
+
           _routes[RouteMode.bus] = _RouteData(
-            durationSeconds: busDuration,
-            distanceMeters: driving.distanceMeters,
+            durationSeconds: _calcDuration(distance, 25), // bus
+            distanceMeters: distance,
             points: driving.points,
           );
         }
+
         if (_routes.isNotEmpty && !_routes.containsKey(_selectedMode)) {
           _selectedMode = RouteMode.car;
-          if (!_routes.containsKey(_selectedMode)) {
-            _selectedMode = _routes.keys.first;
-          }
         }
+
         _applySelectedRoute();
       });
 
       if (_routes.isEmpty) {
-        Get.snackbar('Route Error', 'Could not fetch any route');
+        Get.snackbar('Route Error', 'Could not fetch route');
       }
     } catch (e) {
       if (mounted) setState(() => _loadingRoutes = false);
-      Get.snackbar('Network Error', 'Failed to load route: $e');
+      Get.snackbar('Network Error', 'Failed to load route');
     }
   }
 
@@ -327,7 +424,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                             width: 50,
                             height: 50,
                             child: const Icon(
-                              Icons.my_location,
+                              Icons.rocket_launch_outlined,
                               color: Colors.blue,
                               size: 40,
                             ),
