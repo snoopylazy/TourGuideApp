@@ -94,7 +94,7 @@ class AppTranslations extends Translations {
 
       // View Location
       'view_location': 'មើលទីតាំង',
-      'pick_location_on_map': 'ជ្រើសរើសទីតាំងនៅលើផែនទី',
+      'pick_location_on_map': 'ជ្រើសរើសទីតាំង',
       'tap_to_select_location': 'ចុចនៅខាងក្នុងផែនទីដើម្បីជ្រើសរើសទីតាំង',
       'confirm_location': 'បញ្ជាក់ទីតាំង',
       'navigate': 'ទៅកាន់ទីតាំង',
@@ -177,6 +177,8 @@ class AppTranslations extends Translations {
       'edit_area': 'កែសម្រួលតំបន់',
       'delete_area': 'លុបតំបន់',
       'this_area': 'តំបន់នេះ',
+      'remove_url': 'យកចេញ URL',
+      'add_url': 'បន្ថែម URL',
 
       //auth
       'account_created_successfully': 'គណនីត្រូវបានបង្កើតដោយជោគជ័យ',
@@ -262,6 +264,8 @@ class AppTranslations extends Translations {
       'edit_area': 'Edit Area',
       'delete_area': 'Delete Area',
       'this_area': 'this area',
+      'remove_url': 'Remove URL',
+      'add_url': 'Add URL',
 
       // Theme
       'light_mode': 'Light Mode',

@@ -1118,6 +1118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final titleCtrl = TextEditingController();
     final descCtrl = TextEditingController();
     final imageCtrl = TextEditingController();
+    final List<TextEditingController> imageCtrls = [imageCtrl];
     final latCtrl = TextEditingController();
     final lngCtrl = TextEditingController();
     final searchPlaceCtrl = TextEditingController();
@@ -1240,50 +1241,91 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
 
                         const SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(
-                            controller: imageCtrl,
-                            style: const TextStyle(color: Colors.white),
-                            maxLines: 3,
-                            decoration: InputDecoration(
-                              labelText: 'image_url'.tr,
-                              hintText:
-                                  'https://example.com/img1.jpg, https://example.com/img2.jpg',
-                              hintStyle: TextStyle(
-                                color: Colors.white.withOpacity(0.4),
-                                fontSize: 12,
-                              ),
-                              labelStyle: const TextStyle(
-                                color: Colors.white70,
-                              ),
-                              prefixIcon: const Icon(
-                                Icons.image,
-                                color: Colors.white70,
-                              ),
-                              filled: true,
-                              fillColor: Colors.white.withOpacity(0.1),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: Colors.white.withOpacity(0.3),
+                        // Image URL fields with add/remove buttons
+                        Column(
+                          children: [
+                            for (int i = 0; i < imageCtrls.length; i++)
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                child: TextField(
+                                  controller: imageCtrls[i],
+                                  style: const TextStyle(color: Colors.white),
+                                  maxLines: 2,
+                                  decoration: InputDecoration(
+                                    labelText: '${'image_url'.tr} ${i + 1}',
+                                    hintText: i == 0
+                                        ? 'https://example.com/img1.jpg'
+                                        : 'https://example.com/img2.jpg',
+                                    hintStyle: TextStyle(
+                                      color: Colors.white.withOpacity(0.4),
+                                      fontSize: 12,
+                                    ),
+                                    labelStyle: const TextStyle(
+                                      color: Colors.white70,
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.image,
+                                      color: Colors.white70,
+                                    ),
+                                    // First row: add button (cannot delete)
+                                    // Other rows: remove button
+                                    suffixIcon: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (i == 0)
+                                          IconButton(
+                                            icon: const Icon(Icons.add),
+                                            color: Colors.white70,
+                                            tooltip: 'add_url'.tr,
+                                            onPressed: () {
+                                              setStateSB(() {
+                                                imageCtrls.add(
+                                                  TextEditingController(),
+                                                );
+                                              });
+                                            },
+                                          ),
+                                        if (i > 0)
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.remove_circle_outline,
+                                            ),
+                                            color: Colors.redAccent,
+                                            tooltip: 'remove_url'.tr,
+                                            onPressed: () {
+                                              setStateSB(() {
+                                                imageCtrls[i].dispose();
+                                                imageCtrls.removeAt(i);
+                                              });
+                                            },
+                                          ),
+                                      ],
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.1),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Colors.white.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Colors.white.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: Colors.white.withOpacity(0.3),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         Container(
@@ -1823,24 +1865,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             lat = parsedLat;
                             lng = parsedLng;
                           }
+
+                          final imageUrls = imageCtrls
+                              .map((c) => c.text.trim())
+                              .where((e) => e.isNotEmpty)
+                              .toList();
+
                           final data = <String, dynamic>{
                             'title': titleCtrl.text.trim(),
                             'description': descCtrl.text.trim(),
-                            'imageUrl': imageCtrl.text
-                                .trim()
-                                .split(',')
-                                .map((e) => e.trim())
-                                .where((e) => e.isNotEmpty)
-                                .toList(), // Convert to list
+                            'imageUrl': imageUrls,
                           };
-                          if (selectedCategoryId != null)
+                          if (selectedCategoryId != null) {
                             data['categoryId'] = selectedCategoryId;
-                          if (selectedCategoryName != null)
+                          }
+                          if (selectedCategoryName != null) {
                             data['categoryName'] = selectedCategoryName;
-                          if (selectedAreaId != null)
+                          }
+                          if (selectedAreaId != null) {
                             data['areaId'] = selectedAreaId;
-                          if (selectedAreaName != null)
+                          }
+                          if (selectedAreaName != null) {
                             data['areaName'] = selectedAreaName;
+                          }
 
                           final ok = await adminCtrl.addPlaceWithCoords(
                             data,
@@ -1874,18 +1921,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showEditPlaceDialog(Map<String, dynamic> place) {
     final titleCtrl = TextEditingController(text: place['title'] ?? '');
     final descCtrl = TextEditingController(text: place['description'] ?? '');
-    // Handle both String and List formats
+    // Handle both String and List formats without breaking data URLs
     final imageUrl = place['imageUrl'];
-    final imageUrlText = imageUrl is List
-        ? imageUrl.join(', ')
-        : (imageUrl ?? '');
-    final imageCtrl = TextEditingController(text: imageUrlText);
+    final List<String> initialImageUrls;
+
+    if (imageUrl is List) {
+      // Already a list in Firestore
+      initialImageUrls = imageUrl
+          .map((e) => e.toString())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    } else if (imageUrl is String) {
+      // If it's a data URL, keep it as a single entry (it contains a comma)
+      if (imageUrl.trim().startsWith('data:image')) {
+        initialImageUrls = [imageUrl.trim()];
+      } else {
+        // Old format: comma‑separated normal URLs
+        initialImageUrls = imageUrl
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+    } else {
+      initialImageUrls = [];
+    }
+    final List<TextEditingController> imageCtrls = initialImageUrls.isNotEmpty
+        ? initialImageUrls
+              .map((url) => TextEditingController(text: url))
+              .toList()
+        : [TextEditingController()];
 
     Get.dialog(
       Dialog(
         backgroundColor: Colors.transparent,
-        child: Builder(
-          builder: (ctx) => GlassContainer(
+        child: StatefulBuilder(
+          builder: (ctx, setStateSB) => GlassContainer(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1989,43 +2060,82 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(
-                            controller: imageCtrl,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              labelText: 'image_url'.tr,
-                              labelStyle: const TextStyle(
-                                color: Colors.white70,
-                              ),
-                              prefixIcon: const Icon(
-                                Icons.image,
-                                color: Colors.white70,
-                              ),
-                              filled: true,
-                              fillColor: Colors.white.withOpacity(0.1),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: Colors.white.withOpacity(0.3),
+                        // Image URL fields with add/remove buttons
+                        Column(
+                          children: [
+                            for (int i = 0; i < imageCtrls.length; i++)
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                child: TextField(
+                                  controller: imageCtrls[i],
+                                  style: const TextStyle(color: Colors.white),
+                                  maxLines: 2,
+                                  decoration: InputDecoration(
+                                    labelText: '${'image_url'.tr} ${i + 1}',
+                                    labelStyle: const TextStyle(
+                                      color: Colors.white70,
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.image,
+                                      color: Colors.white70,
+                                    ),
+                                    suffixIcon: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (i == 0)
+                                          IconButton(
+                                            icon: const Icon(Icons.add),
+                                            color: Colors.white70,
+                                            tooltip: 'Add image URL',
+                                            onPressed: () {
+                                              setStateSB(() {
+                                                imageCtrls.add(
+                                                  TextEditingController(),
+                                                );
+                                              });
+                                            },
+                                          ),
+                                        if (i > 0)
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.remove_circle_outline,
+                                            ),
+                                            color: Colors.redAccent,
+                                            tooltip: 'Remove image URL',
+                                            onPressed: () {
+                                              setStateSB(() {
+                                                imageCtrls[i].dispose();
+                                                imageCtrls.removeAt(i);
+                                              });
+                                            },
+                                          ),
+                                      ],
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.1),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Colors.white.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Colors.white.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: Colors.white.withOpacity(0.3),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
+                          ],
                         ),
                         const SizedBox(height: 16),
 
@@ -2119,15 +2229,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       padding: const EdgeInsets.all(10),
                       child: ElevatedButton(
                         onPressed: () async {
+                          final imageUrls = imageCtrls
+                              .map((c) => c.text.trim())
+                              .where((e) => e.isNotEmpty)
+                              .toList();
+
                           final updateData = {
                             'title': titleCtrl.text.trim(),
                             'description': descCtrl.text.trim(),
-                            'imageUrl': imageCtrl.text
-                                .trim()
-                                .split(',')
-                                .map((e) => e.trim())
-                                .where((e) => e.isNotEmpty)
-                                .toList(), // Convert to list
+                            'imageUrl': imageUrls,
                           };
 
                           // Add area data if present
@@ -2419,10 +2529,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  // 'តើអ្នកប្រាកដជាចង់លុប "${place['title'] ?? 'ទីកន្លែងនេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
-                  'confirm_delete_place'.trParams({
-                    'place': place['title'] ?? 'this place',
-                  }),
+                  'តើអ្នកប្រាកដជាចង់លុប "${place['title'] ?? 'ទីកន្លែងនេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
+                  // 'confirm_delete_place'.trParams({
+                  //   'place': place['title'] ?? 'this place',
+                  // }),
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
@@ -2492,10 +2602,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  // 'តើអ្នកប្រាកដជាចង់លុប "${category['name'] ?? 'ប្រភេទនេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
-                  'confirm_delete_category'.trParams({
-                    'category': category['name'] ?? 'this category',
-                  }),
+                  'តើអ្នកប្រាកដជាចង់លុប "${category['name'] ?? 'ប្រភេទនេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
+                  // 'confirm_delete_category'.trParams({
+                  //   'category': category['name'] ?? 'this category',
+                  // }),
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
@@ -2793,10 +2903,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  // 'តើអ្នកប្រាកដជាចង់លុប "${area['name'] ?? 'តំបន់នេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
-                  'confirm_delete_area'.trParams({
-                    'area': area['name'] ?? 'this area',
-                  }),
+                  'តើអ្នកប្រាកដជាចង់លុប "${area['name'] ?? 'តំបន់នេះ'}" ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
+                  // 'confirm_delete_area'.trParams({
+                  //   'area': area['name'] ?? 'this area',
+                  // }),
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
