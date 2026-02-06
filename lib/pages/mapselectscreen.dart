@@ -55,7 +55,7 @@ class _MapselectscreenState extends State<Mapselectscreen> {
           foregroundColor: Colors.white,
           elevation: 0,
           title: Text(
-            viewOnly ? 'View Location' : 'Pick Location on Map',
+            viewOnly ? 'view_location'.tr : 'pick_location_on_map'.tr,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -140,9 +140,9 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                               size: 20,
                             ),
                             const SizedBox(width: 8),
-                            const Expanded(
+                            Expanded(
                               child: Text(
-                                'Tap anywhere on the map to select location',
+                                'tap_to_select_location'.tr,
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.white,
@@ -262,7 +262,7 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                                   },
                                 ),
                                 icon: const Icon(Icons.check),
-                                label: const Text('Confirm Location'),
+                                label: Text('confirm_location'.tr),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
                                   foregroundColor: AppColors.primaryDark,
@@ -283,7 +283,7 @@ class _MapselectscreenState extends State<Mapselectscreen> {
                               child: OutlinedButton.icon(
                                 onPressed: _startNavigation,
                                 icon: const Icon(Icons.directions),
-                                label: const Text('Navigate'),
+                                label: Text('navigate'.tr),
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: Colors.white,
                                   side: const BorderSide(

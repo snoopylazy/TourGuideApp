@@ -210,7 +210,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               if (isFavorite) {
                 await favDoc.delete();
                 Get.snackbar(
-                  'Removed',
+                  'removed'.tr,
                   'removed_from_favorites'.tr,
                   snackPosition: SnackPosition.BOTTOM,
                 );
@@ -221,15 +221,15 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                   'createdAt': FieldValue.serverTimestamp(),
                 }, SetOptions(merge: true));
                 Get.snackbar(
-                  'Success',
+                  'success'.tr,
                   'added_to_favorites'.tr,
                   snackPosition: SnackPosition.BOTTOM,
                 );
               }
             } catch (e) {
               Get.snackbar(
-                'Error',
-                'Failed to update favorite: $e',
+                'error'.tr,
+                'failed_to_update_favorite'.tr + ': $e',
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: Colors.red.shade100,
                 colorText: Colors.red.shade900,
@@ -283,7 +283,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${user != null ? ', ${user.name}' : ''}!',
+                                        '${user != null ? ' ${user.name}' : ''}!',
                                         style: const TextStyle(
                                           color: Colors.white70,
                                           fontSize: 14,

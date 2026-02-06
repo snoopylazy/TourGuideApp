@@ -44,7 +44,7 @@ class ProfileController extends GetxController {
         _lastLoadedUid = null;
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load profile: $e');
+      Get.snackbar('error'.tr, 'failed_to_load_profile'.tr + ': $e');
       user.value = null;
       _lastLoadedUid = null;
     } finally {
@@ -62,9 +62,9 @@ class ProfileController extends GetxController {
     try {
       await _service.updateUserProfile(uid, data);
       await _loadProfileIfNeeded(uid); // reload fresh data
-      Get.snackbar('Success', 'Profile updated');
+      Get.snackbar('success'.tr, 'profile_updated'.tr);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update profile: $e');
+      Get.snackbar('error'.tr, 'failed_to_update_profile'.tr + ': $e');
     } finally {
       isLoading.value = false;
     }

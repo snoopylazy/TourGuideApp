@@ -57,7 +57,7 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Please login to view favorites',
+                    'please_login_to_view_favorites'.tr,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white.withOpacity(0.9),
@@ -77,8 +77,8 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Login',
+                    child: Text(
+                      'login'.tr,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -115,7 +115,7 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
                         Icons.search,
                         color: Colors.white70,
                       ),
-                      hintText: 'ស្វែងរកទីកន្លែងដែលអ្នកចូលចិត្ត',
+                      hintText: 'search_places'.tr,
                       hintStyle: TextStyle(
                         color: Colors.white.withOpacity(0.5),
                       ),
@@ -225,7 +225,7 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
                                     Container(
                                       padding: const EdgeInsets.all(10),
                                       child: Text(
-                                        'No matching favorites',
+                                        'no_matching_favorites'.tr,
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
@@ -235,7 +235,7 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      'Try a different place name.',
+                                      'try_different_place_name'.tr,
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.white.withOpacity(0.8),
@@ -355,8 +355,8 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
                                             .doc(favDocId)
                                             .delete();
                                         Get.snackbar(
-                                          'Removed',
-                                          'Removed from favorites',
+                                          'removed'.tr,
+                                          'removed_from_favorites'.tr,
                                           snackPosition: SnackPosition.BOTTOM,
                                           backgroundColor:
                                               Colors.orange.shade100,
@@ -396,7 +396,7 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'មិនទាន់មានទីកន្លែងដែលអ្នកចូលចិត្ត',
+              'no_favorites_yet'.tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -407,7 +407,7 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
             Container(
               padding: const EdgeInsets.all(10),
               child: Text(
-                'ចុចលើប៊ូតុងចិត្តស្រឡាញ់នៅលើទីកន្លែងដើម្បីបន្ថែមទីកន្លែងទៅក្នុងបញ្ជីនេះ',
+                'tap_favorite_button'.tr,
                 style: TextStyle(
                   fontSize: 10,
                   color: Colors.white.withOpacity(0.8),

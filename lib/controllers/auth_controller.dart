@@ -66,13 +66,12 @@ class AuthController extends GetxController {
               }, SetOptions(merge: true));
             } catch (_) {}
           }
-
         } catch (e) {
           // Non-fatal: proceed even if profile sync fails
         }
         Get.snackbar(
-          'Success',
-          'Welcome back! You are now logged in.',
+          'success'.tr,
+          'welcome_back_logged_in'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green.shade100,
           colorText: Colors.green.shade900,
@@ -80,11 +79,11 @@ class AuthController extends GetxController {
         Get.offAllNamed('/home');
         return true;
       }
-      Get.snackbar('Error', 'Login failed');
+      Get.snackbar('error'.tr, 'login_failed'.tr);
       return false;
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('error'.tr, e.toString());
       return false;
     }
   }
@@ -106,8 +105,8 @@ class AuthController extends GetxController {
       isLoading.value = false;
       if (user != null) {
         Get.snackbar(
-          'Success',
-          'Account created successfully! Welcome to TourGuide.',
+          'success'.tr,
+          'account_created_successfully'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green.shade100,
           colorText: Colors.green.shade900,
@@ -115,11 +114,11 @@ class AuthController extends GetxController {
         Get.offAllNamed('/home');
         return true;
       }
-      Get.snackbar('Error', 'Registration failed');
+      Get.snackbar('error'.tr, 'registration_failed'.tr);
       return false;
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('error'.tr, e.toString());
       return false;
     }
   }
@@ -131,7 +130,7 @@ class AuthController extends GetxController {
 
   Future<void> resetPassword(String email) async {
     await _authService.resetPassword(email);
-    Get.snackbar('Success', 'Password reset email sent');
+    Get.snackbar('success'.tr, 'password_reset_email_sent'.tr);
   }
 
   /// Reset by identifier (username or email). If identifier is username,
@@ -151,7 +150,7 @@ class AuthController extends GetxController {
       }
     }
     if (email == null || email.isEmpty) {
-      Get.snackbar('Error', 'No account found for that username');
+      Get.snackbar('error'.tr, 'no_account_found_for_that_username'.tr);
       return;
     }
     await resetPassword(email);

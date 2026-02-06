@@ -63,7 +63,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Future<void> _initializeLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      Get.snackbar('Location Services', 'Please enable location services');
+      Get.snackbar(
+        'location_services'.tr,
+        'please_enable_location_services'.tr,
+      );
       Get.back();
       return;
     }
@@ -72,17 +75,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        Get.snackbar('Permission Denied', 'Location permission is required');
+        Get.snackbar('permission_denied'.tr, 'location_permission_required'.tr);
         Get.back();
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      Get.snackbar(
-        'Permission Denied',
-        'Location permissions permanently denied',
-      );
+      Get.snackbar('permission_denied'.tr, 'location_permission_required'.tr);
       Get.back();
       return;
     }
@@ -123,8 +123,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
           if (distance <= _arrivalThreshold && !_arrived) {
             setState(() => _arrived = true);
             Get.snackbar(
-              'Congratulations!',
-              'You have arrived at your destination!',
+              'tour_completed'.tr,
+              'tour_completed_message'.tr,
               backgroundColor: Colors.blue,
               colorText: Colors.white,
               duration: const Duration(seconds: 5),
@@ -358,8 +358,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text(
-            'Get to Your Destination',
+          title: Text(
+            'get_to_destination'.tr,
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.transparent,
@@ -381,8 +381,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Container(
                         padding: const EdgeInsets.all(10),
-                        child: const Text(
-                          'Getting your location...',
+                        child: Text(
+                          'getting_location'.tr,
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
@@ -464,9 +464,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       right: 20,
                       child: GlassContainer(
                         padding: const EdgeInsets.all(20),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            'You have arrived at your destination!',
+                            'tour_completed_message'.tr,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,

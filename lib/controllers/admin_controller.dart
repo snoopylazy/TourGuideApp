@@ -63,11 +63,11 @@ class AdminController extends GetxController {
       final docRef = await _firestore.collection('places').add(data);
       print('Place added with ID: ${docRef.id}'); // Debug log
       await fetchPlaces();
-      Get.snackbar('Success', 'Place added successfully');
+      Get.snackbar('success'.tr, 'place_added_successfully'.tr);
       return true;
     } catch (e) {
       print('Error adding place: $e'); // Debug log
-      Get.snackbar('Error', 'Failed to add place: $e');
+      Get.snackbar('error'.tr, 'failed_to_add_place'.tr + ': $e');
       return false;
     } finally {
       isLoading.value = false;
@@ -80,7 +80,7 @@ class AdminController extends GetxController {
       // Check if user is authenticated
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return false;
       }
 
@@ -91,11 +91,11 @@ class AdminController extends GetxController {
         'createdAt': FieldValue.serverTimestamp(),
       });
       await fetchCategories();
-      Get.snackbar('Success', 'Category added successfully');
+      Get.snackbar('success'.tr, 'category_added_successfully'.tr);
       return true;
     } catch (e) {
       print('Error adding category: $e'); // Debug log
-      Get.snackbar('Error', 'Failed to add category: $e');
+      Get.snackbar('error'.tr, 'failed_to_add_category'.tr + ': $e');
       return false;
     } finally {
       isLoading.value = false;
@@ -108,7 +108,7 @@ class AdminController extends GetxController {
       // Check if user is authenticated
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return false;
       }
 
@@ -119,7 +119,7 @@ class AdminController extends GetxController {
         'createdAt': FieldValue.serverTimestamp(),
       });
       await fetchAreas();
-      Get.snackbar('Success', 'Area added successfully');
+      Get.snackbar('success'.tr, 'area_added_successfully'.tr);
       return true;
     } catch (e) {
       print('Error adding area: $e'); // Debug log
@@ -175,7 +175,7 @@ class AdminController extends GetxController {
     try {
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return false;
       }
 
@@ -183,10 +183,10 @@ class AdminController extends GetxController {
       data['updatedAt'] = FieldValue.serverTimestamp();
       await _firestore.collection('places').doc(id).update(data);
       await fetchPlaces();
-      Get.snackbar('Success', 'Place updated successfully');
+      Get.snackbar('success'.tr, 'place_updated_successfully'.tr);
       return true;
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update place: $e');
+      Get.snackbar('error'.tr, 'failed_to_update_place'.tr + ': $e');
       return false;
     } finally {
       isLoading.value = false;
@@ -197,16 +197,16 @@ class AdminController extends GetxController {
     try {
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return;
       }
 
       isLoading.value = true;
       await _firestore.collection('places').doc(id).delete();
       await fetchPlaces();
-      Get.snackbar('Success', 'Place deleted successfully');
+      Get.snackbar('success'.tr, 'place_deleted_successfully'.tr);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete place: $e');
+      Get.snackbar('error'.tr, 'failed_to_delete_place'.tr + ': $e');
     } finally {
       isLoading.value = false;
     }
@@ -216,7 +216,7 @@ class AdminController extends GetxController {
     try {
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return;
       }
 
@@ -224,9 +224,9 @@ class AdminController extends GetxController {
       data['updatedAt'] = FieldValue.serverTimestamp();
       await _firestore.collection('categories').doc(id).update(data);
       await fetchCategories();
-      Get.snackbar('Success', 'Category updated successfully');
+      Get.snackbar('success'.tr, 'category_updated_successfully'.tr);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update category: $e');
+      Get.snackbar('error'.tr, 'failed_to_update_category'.tr + ': $e');
     } finally {
       isLoading.value = false;
     }
@@ -236,16 +236,16 @@ class AdminController extends GetxController {
     try {
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return;
       }
 
       isLoading.value = true;
       await _firestore.collection('categories').doc(id).delete();
       await fetchCategories();
-      Get.snackbar('Success', 'Category deleted successfully');
+      Get.snackbar('success'.tr, 'category_deleted_successfully'.tr);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete category: $e');
+      Get.snackbar('error'.tr, 'failed_to_delete_category'.tr + ': $e');
     } finally {
       isLoading.value = false;
     }
@@ -255,7 +255,7 @@ class AdminController extends GetxController {
     try {
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return false;
       }
 
@@ -263,10 +263,10 @@ class AdminController extends GetxController {
       data['updatedAt'] = FieldValue.serverTimestamp();
       await _firestore.collection('areas').doc(id).update(data);
       await fetchAreas();
-      Get.snackbar('Success', 'Area updated successfully');
+      Get.snackbar('success'.tr, 'area_updated_successfully'.tr);
       return true;
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update area: $e');
+      Get.snackbar('error'.tr, 'failed_to_update_area'.tr + ': $e');
       return false;
     } finally {
       isLoading.value = false;
@@ -277,16 +277,16 @@ class AdminController extends GetxController {
     try {
       final currentUser = fb.FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.snackbar('Error', 'Please login first');
+        Get.snackbar('error'.tr, 'please_login_first'.tr);
         return;
       }
 
       isLoading.value = true;
       await _firestore.collection('areas').doc(id).delete();
       await fetchAreas();
-      Get.snackbar('Success', 'Area deleted successfully');
+      Get.snackbar('success'.tr, 'area_deleted_successfully'.tr);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete area: $e');
+      Get.snackbar('error'.tr, 'failed_to_delete_area'.tr + ': $e');
     } finally {
       isLoading.value = false;
     }

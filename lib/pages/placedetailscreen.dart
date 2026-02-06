@@ -89,8 +89,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
               body: Center(
                 child: GlassContainer(
                   padding: const EdgeInsets.all(32),
-                  child: const Text(
-                    'Place not found',
+                  child: Text(
+                    'place_not_found'.tr,
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
@@ -153,8 +153,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                               final currentUser = auth.firebaseUser.value;
                               if (currentUser == null) {
                                 Get.snackbar(
-                                  'Login Required',
-                                  'Please login to use favorites',
+                                  'login_required'.tr,
+                                  'please_login_to_manage_favorites'.tr,
                                   snackPosition: SnackPosition.BOTTOM,
                                   backgroundColor: Colors.red.shade100,
                                   colorText: Colors.red.shade900,
@@ -170,8 +170,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                                 if (isFavorite) {
                                   await favRef.delete();
                                   Get.snackbar(
-                                    'Removed',
-                                    'Removed from favorites',
+                                    'removed'.tr,
+                                    'removed_from_favorites'.tr,
                                     snackPosition: SnackPosition.BOTTOM,
                                   );
                                 } else {
@@ -181,8 +181,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                                     'createdAt': FieldValue.serverTimestamp(),
                                   }, SetOptions(merge: true));
                                   Get.snackbar(
-                                    'Added',
-                                    'Added to favorites',
+                                    'added'.tr,
+                                    'added_to_favorites'.tr,
                                     snackPosition: SnackPosition.BOTTOM,
                                   );
                                 }
@@ -327,7 +327,7 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Icon(
                                       Icons.location_on,
                                       color: Colors.white,
@@ -335,7 +335,7 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                                     ),
                                     SizedBox(width: 8),
                                     Text(
-                                      'ទីតាំង',
+                                      'location'.tr,
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -361,7 +361,7 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                                       },
                                     ),
                                     icon: const Icon(Icons.map),
-                                    label: const Text('មើលទីតាំង'),
+                                    label: Text('view_location'.tr),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
                                       foregroundColor: AppColors.primaryDark,
@@ -385,7 +385,7 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Icon(
                                       Icons.star,
                                       color: Colors.white,
@@ -393,7 +393,7 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                                     ),
                                     SizedBox(width: 8),
                                     Text(
-                                      'បញ្ចេញមតិ',
+                                      'review'.tr,
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -469,8 +469,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (reviews.isEmpty)
-              const Text(
-                'No reviews yet. Be the first to review!',
+              Text(
+                'no_reviews_yet'.tr,
                 style: TextStyle(color: Colors.white70, fontSize: 14),
               ),
             if (reviews.isNotEmpty)
@@ -561,8 +561,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
               Center(
                 child: TextButton(
                   onPressed: () => Get.toNamed('/login'),
-                  child: const Text(
-                    'Login to add a review',
+                  child: Text(
+                    'login_to_add_review'.tr,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -600,8 +600,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Add Your Review',
+            child: Text(
+              'add_your_review'.tr,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -617,7 +617,7 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
               maxLines: 4,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: 'Share your thoughts...',
+                hintText: 'share_your_thoughts'.tr,
                 hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.1),
@@ -647,8 +647,8 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                   final comment = commentController.text.trim();
                   if (comment.isEmpty) {
                     Get.snackbar(
-                      'Error',
-                      'Comment cannot be empty',
+                      'error'.tr,
+                      'comment_cannot_be_empty'.tr,
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: Colors.red.shade100,
                       colorText: Colors.red.shade900,
@@ -692,16 +692,16 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                     commentController.clear();
 
                     Get.snackbar(
-                      'Success',
-                      'Review added successfully',
+                      'success'.tr,
+                      'review_added_successfully'.tr,
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: Colors.green.shade100,
                       colorText: Colors.green.shade900,
                     );
                   } catch (e) {
                     Get.snackbar(
-                      'Error',
-                      'Failed to add review: $e',
+                      'error'.tr,
+                      'error_adding_review'.tr + ': $e',
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: Colors.red.shade100,
                       colorText: Colors.red.shade900,
@@ -716,7 +716,7 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('បញ្ជូន', style: TextStyle(fontSize: 14)),
+                child: Text('send'.tr, style: TextStyle(fontSize: 14)),
               ),
             ),
           ),

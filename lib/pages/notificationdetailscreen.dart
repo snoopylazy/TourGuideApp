@@ -29,7 +29,7 @@ class NotificationDetailScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue.shade900,
         foregroundColor: Colors.white,
-        title: const Text('Notification Details'),
+        title: Text('notification_details'.tr),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -131,8 +131,8 @@ class NotificationDetailScreen extends StatelessWidget {
                           size: 20,
                         ),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Place',
+                        Text(
+                          'place'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -149,7 +149,7 @@ class NotificationDetailScreen extends StatelessWidget {
                               );
                             },
                             icon: const Icon(Icons.open_in_new),
-                            label: const Text('Open'),
+                            label: Text('open'.tr),
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.blue,
                             ),
@@ -188,14 +188,10 @@ class NotificationDetailScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.blue.shade900,
-                        size: 20,
-                      ),
+                      Icon(Icons.person, color: Colors.blue.shade900, size: 20),
                       const SizedBox(width: 8),
-                      const Text(
-                        'User Review',
+                      Text(
+                        'user_review'.tr,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -268,8 +264,8 @@ class NotificationDetailScreen extends StatelessWidget {
                           size: 20,
                         ),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Admin Response',
+                        Text(
+                          'admin_response'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -316,8 +312,8 @@ class NotificationDetailScreen extends StatelessWidget {
                           size: 20,
                         ),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Respond to Review',
+                        Text(
+                          'respond_to_review'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -330,7 +326,7 @@ class NotificationDetailScreen extends StatelessWidget {
                       controller: responseController,
                       maxLines: 4,
                       decoration: InputDecoration(
-                        hintText: 'Type your response...',
+                        hintText: 'type_your_response'.tr,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -354,8 +350,8 @@ class NotificationDetailScreen extends StatelessWidget {
                               : () async {
                                   if (responseController.text.trim().isEmpty) {
                                     Get.snackbar(
-                                      'Error',
-                                      'Response cannot be empty',
+                                      'error'.tr,
+                                      'response_cannot_be_empty'.tr,
                                     );
                                     return;
                                   }
@@ -393,8 +389,8 @@ class NotificationDetailScreen extends StatelessWidget {
                                     }
 
                                     Get.snackbar(
-                                      'Success',
-                                      'Response sent to user',
+                                      'success'.tr,
+                                      'response_sent_to_user'.tr,
                                       snackPosition: SnackPosition.BOTTOM,
                                       backgroundColor: Colors.blue.shade100,
                                       colorText: Colors.blue.shade900,
@@ -402,8 +398,8 @@ class NotificationDetailScreen extends StatelessWidget {
                                     Get.back();
                                   } catch (e) {
                                     Get.snackbar(
-                                      'Error',
-                                      'Failed to send response: $e',
+                                      'error'.tr,
+                                      'failed_to_send_response'.tr + ' $e',
                                       snackPosition: SnackPosition.BOTTOM,
                                       backgroundColor: Colors.red.shade100,
                                       colorText: Colors.red.shade900,
@@ -429,8 +425,8 @@ class NotificationDetailScreen extends StatelessWidget {
                                     ),
                                   ),
                                 )
-                              : const Text(
-                                  'Send Response',
+                              : Text(
+                                  'send_response'.tr,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
