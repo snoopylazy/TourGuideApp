@@ -8,6 +8,7 @@ import '../controllers/profile_controller.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/admin_controller.dart';
 import '../controllers/theme_controller.dart';
+import '../controllers/language_controller.dart';
 import '../widgets/network_image_widget.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/shimmer_loading.dart';
@@ -69,26 +70,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           return Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: const Text(
-                'ការកំណត់',
-                style: TextStyle(color: AppColors.textLight),
+              title: Text(
+                'settings'.tr,
+                style: const TextStyle(color: AppColors.textLight),
               ),
               backgroundColor: Colors.transparent,
               elevation: 0,
               iconTheme: const IconThemeData(color: AppColors.textLight),
-              // actions: [
-              //   Obx(() {
-              //     final themeCtrl = Get.find<ThemeController>();
-              //     return IconButton(
-              //       icon: Icon(
-              //         themeCtrl.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-              //         color: AppColors.textLight,
-              //       ),
-              //       onPressed: () => themeCtrl.toggleTheme(),
-              //       tooltip: themeCtrl.isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode',
-              //     );
-              //   }),
-              // ],
+              actions: [_buildSettingsMenu()],
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
@@ -125,28 +114,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           return Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: const Text(
-                'ការកំណត់',
-                style: TextStyle(color: AppColors.textLight),
+              title: Text(
+                'settings'.tr,
+                style: const TextStyle(color: AppColors.textLight),
               ),
               backgroundColor: Colors.transparent,
               elevation: 0,
               iconTheme: const IconThemeData(color: AppColors.textLight),
-              actions: [
-                Obx(() {
-                  final themeCtrl = Get.find<ThemeController>();
-                  return IconButton(
-                    icon: Icon(
-                      themeCtrl.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                      color: AppColors.textLight,
-                    ),
-                    onPressed: () => themeCtrl.toggleTheme(),
-                    tooltip: themeCtrl.isDarkMode
-                        ? 'Switch to Light Mode'
-                        : 'Switch to Dark Mode',
-                  );
-                }),
-              ],
+              actions: [_buildSettingsMenu()],
             ),
             body: Center(
               child: GlassContainer(
@@ -170,23 +145,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: const Text(
-                'ការកំណត់',
-                style: TextStyle(color: Colors.white),
+              title: Text(
+                'settings'.tr,
+                style: const TextStyle(color: Colors.white),
               ),
               backgroundColor: Colors.transparent,
               elevation: 0,
               iconTheme: const IconThemeData(color: Colors.white),
+              actions: [_buildSettingsMenu()],
               bottom: isAdmin
                   ? TabBar(
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.white70,
                       indicatorColor: Colors.white,
-                      tabs: const [
-                        Tab(text: 'ប្រវត្តិរូប'),
-                        Tab(text: 'ទីកន្លែង'),
-                        Tab(text: 'តំបន់'),
-                        Tab(text: 'ប្រភេទ'),
+                      tabs: [
+                        Tab(text: 'profile'.tr),
+                        Tab(text: 'places'.tr),
+                        Tab(text: 'areas'.tr),
+                        Tab(text: 'categories'.tr),
                       ],
                     )
                   : null,
@@ -204,6 +180,150 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildSettingsMenu() {
+    final themeCtrl = Get.find<ThemeController>();
+    final langCtrl = Get.find<LanguageController>();
+
+    return Obx(
+      () => PopupMenuButton<String>(
+        icon: const Icon(Icons.more_vert, color: Colors.white),
+        color: themeCtrl.isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        onSelected: (value) {
+          if (value == 'theme') {
+            themeCtrl.toggleTheme();
+          } else if (value == 'language_km') {
+            langCtrl.setLanguage(const Locale('km', 'KH'));
+          } else if (value == 'language_en') {
+            langCtrl.setLanguage(const Locale('en', 'US'));
+          }
+        },
+        itemBuilder: (BuildContext context) => [
+          // Theme option
+          PopupMenuItem<String>(
+            value: 'theme',
+            child: Obx(
+              () => Row(
+                children: [
+                  Icon(
+                    themeCtrl.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                    color: themeCtrl.isDarkMode
+                        ? Colors.amber.shade300
+                        : Colors.grey.shade700,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    themeCtrl.isDarkMode
+                        ? 'switch_to_dark'.tr
+                        : 'switch_to_light'.tr,
+                    style: TextStyle(
+                      color: themeCtrl.isDarkMode
+                          ? Colors.white
+                          : Colors.grey.shade900,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const PopupMenuDivider(),
+          // Language header
+          PopupMenuItem<String>(
+            enabled: false,
+            child: Text(
+              'language'.tr,
+              style: TextStyle(
+                color: themeCtrl.isDarkMode
+                    ? Colors.grey.shade400
+                    : Colors.grey.shade600,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          // Khmer option
+          PopupMenuItem<String>(
+            value: 'language_km',
+            child: Obx(
+              () => Row(
+                children: [
+                  Icon(
+                    Icons.language,
+                    color: langCtrl.isKhmer
+                        ? Colors.blue
+                        : (themeCtrl.isDarkMode
+                              ? Colors.grey.shade500
+                              : Colors.grey.shade400),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'khmer'.tr,
+                    style: TextStyle(
+                      color: langCtrl.isKhmer
+                          ? Colors.blue
+                          : (themeCtrl.isDarkMode
+                                ? Colors.white70
+                                : Colors.grey.shade700),
+                      fontSize: 14,
+                      fontWeight: langCtrl.isKhmer
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                  if (langCtrl.isKhmer) ...[
+                    const Spacer(),
+                    Icon(Icons.check, color: Colors.blue, size: 18),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          // English option
+          PopupMenuItem<String>(
+            value: 'language_en',
+            child: Obx(
+              () => Row(
+                children: [
+                  Icon(
+                    Icons.language,
+                    color: langCtrl.isEnglish
+                        ? Colors.blue
+                        : (themeCtrl.isDarkMode
+                              ? Colors.grey.shade500
+                              : Colors.grey.shade400),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'english'.tr,
+                    style: TextStyle(
+                      color: langCtrl.isEnglish
+                          ? Colors.blue
+                          : (themeCtrl.isDarkMode
+                                ? Colors.white70
+                                : Colors.grey.shade700),
+                      fontSize: 14,
+                      fontWeight: langCtrl.isEnglish
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                  if (langCtrl.isEnglish) ...[
+                    const Spacer(),
+                    Icon(Icons.check, color: Colors.blue, size: 18),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

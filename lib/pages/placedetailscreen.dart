@@ -26,32 +26,39 @@ class _PlacedetailscreenState extends State<Placedetailscreen> {
     final uid = auth.firebaseUser.value?.uid;
     final profileCtrl = Get.put(ProfileController());
 
+    // if (placeId == null) {
+    //   return GradientBackground(
+    //     child: Scaffold(
+    //       backgroundColor: Colors.transparent,
+    //       body: Center(
+    //         child: GlassContainer(
+    //           padding: const EdgeInsets.all(32),
+    //           child: Container(
+    //             padding: const EdgeInsets.all(10),
+    //             decoration: BoxDecoration(
+    //               color: Colors.white.withOpacity(0.1),
+    //               borderRadius: BorderRadius.circular(12),
+    //               border: Border.all(
+    //                 color: Colors.white.withOpacity(0.2),
+    //                 width: 1,
+    //               ),
+    //             ),
+    //             child: const Text(
+    //               'No place selected',
+    //               style: TextStyle(color: Colors.white, fontSize: 16),
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
+
     if (placeId == null) {
-      return GradientBackground(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: GlassContainer(
-              padding: const EdgeInsets.all(32),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1,
-                  ),
-                ),
-                child: const Text(
-                  'No place selected',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ),
-          ),
-        ),
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => Get.offNamed('/home'),
       );
+      return const SizedBox.shrink(); // Or your "No place selected" UI
     }
 
     if (uid != null) {

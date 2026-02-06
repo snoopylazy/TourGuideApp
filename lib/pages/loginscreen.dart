@@ -55,8 +55,8 @@ class Loginscreen extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 10),
-                      const Text(
-                        'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
+                      Text(
+                        'welcome_message'.tr,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -65,7 +65,7 @@ class Loginscreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'ចូលទៅក្នុងគណនីរបស់អ្នកដើម្បីចាប់ផ្តើមការផ្សងព្រេងថ្មីៗ!',
+                        'login_prompt'.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
@@ -78,7 +78,7 @@ class Loginscreen extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'Email or Username',
+                          'email_or_username'.tr,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -93,7 +93,7 @@ class Loginscreen extends StatelessWidget {
                           onChanged: (v) => identifier.value = v,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            hintText: 'e.g. wanderer@travel.com',
+                            hintText: 'e.g. snoopy@gmail.com',
                             hintStyle: TextStyle(
                               color: Colors.white.withOpacity(0.5),
                             ),
@@ -131,7 +131,7 @@ class Loginscreen extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Password',
+                            'password'.tr,
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
@@ -200,7 +200,7 @@ class Loginscreen extends StatelessWidget {
                             if (identifier.value.trim().isEmpty) {
                               Get.snackbar(
                                 'Error',
-                                'Enter your email to reset password',
+                                'reset_password_prompt'.tr,
                                 backgroundColor: Colors.red.shade100,
                                 colorText: Colors.red.shade900,
                               );
@@ -211,7 +211,7 @@ class Loginscreen extends StatelessWidget {
                             );
                           },
                           child: Text(
-                            'Forget Password?',
+                            'forgot_password'.tr,
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -241,7 +241,7 @@ class Loginscreen extends StatelessWidget {
 
                                         Get.snackbar(
                                           'Error',
-                                          'Please fill email and password',
+                                          'please_fill_email_and_password'.tr,
                                           backgroundColor: Colors.red.shade100,
                                           colorText: Colors.red.shade900,
                                         );
@@ -273,7 +273,7 @@ class Loginscreen extends StatelessWidget {
                                         );
 
                                         Get.snackbar(
-                                          'Login Failed',
+                                          'login_failed'.tr,
                                           e.toString().replaceAll(
                                             'Exception: ',
                                             '',
@@ -293,8 +293,8 @@ class Loginscreen extends StatelessWidget {
                                       ),
                                       elevation: 0,
                                     ),
-                                    child: const Text(
-                                      'Login',
+                                    child: Text(
+                                      'login'.tr,
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
@@ -309,7 +309,7 @@ class Loginscreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Don't have an account? ",
+                            "signup_prompt".tr,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withOpacity(0.9),
@@ -322,8 +322,8 @@ class Loginscreen extends StatelessWidget {
                               minimumSize: const Size(0, 0),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            child: const Text(
-                              'Register',
+                            child: Text(
+                              'register'.tr,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white,

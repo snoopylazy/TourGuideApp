@@ -273,7 +273,16 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
                                         width: 100,
                                         height: 100,
                                         child: NetworkImageWidget(
-                                          url: placeData['imageUrl'] ?? '',
+                                          url: () {
+                                            final imageUrl =
+                                                placeData['imageUrl'];
+                                            if (imageUrl is List) {
+                                              return imageUrl.isNotEmpty
+                                                  ? imageUrl[0] as String
+                                                  : '';
+                                            }
+                                            return (imageUrl as String?) ?? '';
+                                          }(),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -428,12 +437,16 @@ class _FavoriteplacescreenState extends State<Favoriteplacescreen> {
         if (!placeSnap.exists) continue;
 
         final data = placeSnap.data()!;
+        final rawImage = data['imageUrl'];
+        final imageUrl = rawImage is List
+            ? (rawImage.isNotEmpty ? rawImage[0] as String? : '')
+            : (rawImage as String?);
         results.add({
           'placeId': placeId,
           'favDocId': fav.id,
           'title': data['title'] ?? 'Unnamed place',
           'description': data['description'] ?? '',
-          'imageUrl': data['imageUrl'] ?? '',
+          'imageUrl': imageUrl ?? '',
           'categoryName': data['categoryName'],
         });
       } catch (e) {

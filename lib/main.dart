@@ -7,6 +7,7 @@ import 'controllers/auth_controller.dart';
 import 'controllers/profile_controller.dart';
 import 'controllers/admin_controller.dart';
 import 'controllers/theme_controller.dart';
+import 'controllers/language_controller.dart';
 import 'controllers/notification_controller.dart';
 import 'services/notification_service.dart';
 import 'config/app_colors.dart';
@@ -20,6 +21,7 @@ import 'pages/placedetailscreen.dart';
 import 'pages/mapselectscreen.dart';
 import 'pages/notificationdetailscreen.dart';
 import 'models/notification_model.dart';
+import 'translations/app_translations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,7 @@ void main() async {
 
   Get.put(AuthController());
   Get.put(ThemeController(), permanent: true);
+  Get.put(LanguageController(), permanent: true);
   // Pre-register controllers for Settings and admin features
   Get.put(ProfileController(), permanent: true);
   Get.put(AdminController(), permanent: true);
@@ -41,11 +44,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
+    final languageController = Get.find<LanguageController>();
 
     return Obx(
       () => GetMaterialApp(
         title: 'Tour Guide - Cambodia',
         debugShowCheckedModeBanner: false,
+        locale: languageController.currentLocale.value,
+        fallbackLocale: const Locale('km', 'KH'),
+        translations: AppTranslations(),
         themeMode: themeController.themeMode.value,
         theme: ThemeData(
           useMaterial3: true,

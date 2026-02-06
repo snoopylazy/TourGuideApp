@@ -46,8 +46,8 @@ class Registerscreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
+                        Text(
+                          'welcome_message'.tr,
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class Registerscreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "ចាប់ផ្តើមការស្វែងរកភាពល្អនៃពិភពលោក។",
+                          "register_welcome_message".tr,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.white.withOpacity(0.9),
@@ -65,7 +65,7 @@ class Registerscreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 40),
                         Text(
-                          'Full Name',
+                          'full_name'.tr,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -110,7 +110,7 @@ class Registerscreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          'Email Address',
+                          'email'.tr,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -122,7 +122,7 @@ class Registerscreen extends StatelessWidget {
                           onChanged: (v) => email.value = v,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            hintText: 'snoopier@example.com',
+                            hintText: 'snoopier@gmail.com',
                             hintStyle: TextStyle(
                               color: Colors.white.withOpacity(0.5),
                             ),
@@ -155,7 +155,7 @@ class Registerscreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          'Password',
+                          'password'.tr,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -169,7 +169,7 @@ class Registerscreen extends StatelessWidget {
                             obscureText: obscurePassword.value,
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                              hintText: 'Create a strong password',
+                              hintText: 'password_hint'.tr,
                               hintStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.5),
                               ),
@@ -234,7 +234,7 @@ class Registerscreen extends StatelessWidget {
 
                                         Get.snackbar(
                                           'Error',
-                                          'Please fill all required fields',
+                                          'please_fill_all_fields'.tr,
                                           backgroundColor: Colors.red.shade100,
                                           colorText: Colors.red.shade900,
                                         );
@@ -249,7 +249,7 @@ class Registerscreen extends StatelessWidget {
 
                                         Get.snackbar(
                                           'Error',
-                                          'Invalid image URL',
+                                          'invalid_image_url'.tr,
                                           backgroundColor: Colors.red.shade100,
                                           colorText: Colors.red.shade900,
                                         );
@@ -275,7 +275,7 @@ class Registerscreen extends StatelessWidget {
                                         // Optional: success message or auto-redirect
                                         Get.snackbar(
                                           'Success',
-                                          'Account created! Welcome aboard.',
+                                          'account_created'.tr,
                                           backgroundColor:
                                               Colors.green.shade100,
                                           colorText: Colors.green.shade900,
@@ -287,7 +287,7 @@ class Registerscreen extends StatelessWidget {
                                         );
 
                                         Get.snackbar(
-                                          'Registration Failed',
+                                          'registration_failed'.tr,
                                           e.toString().replaceAll(
                                             'Exception: ',
                                             '',
@@ -307,8 +307,8 @@ class Registerscreen extends StatelessWidget {
                                       ),
                                       elevation: 0,
                                     ),
-                                    child: const Text(
-                                      'Sign Up',
+                                    child: Text(
+                                      'sign_up'.tr,
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
@@ -322,7 +322,7 @@ class Registerscreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Already have an account? ',
+                              'already_have_account'.tr,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white.withOpacity(0.9),
@@ -335,8 +335,8 @@ class Registerscreen extends StatelessWidget {
                                 minimumSize: const Size(0, 0),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
-                              child: const Text(
-                                'Log In',
+                              child: Text(
+                                'login'.tr,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.white,

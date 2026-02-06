@@ -18,9 +18,9 @@ class AppColors {
 
   // Dark mode colors (darker shades)
   static List<Color> get darkGradient => [
-    const Color(0xFF1A237E), // Indigo 900
-    const Color(0xFF283593), // Indigo 800
-    const Color(0xFF3949AB), // Indigo 700
+    const Color.fromARGB(255, 34, 44, 162), // Indigo 900
+    const Color.fromARGB(255, 46, 62, 183), // Indigo 800
+    const Color.fromARGB(255, 65, 86, 219), // Indigo 700
   ];
 
   // Text colors

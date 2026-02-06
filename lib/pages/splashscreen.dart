@@ -78,7 +78,7 @@ class _SplashscreenState extends State<Splashscreen>
                           alignment: Alignment.center,
                           padding: const EdgeInsets.all(10),
                           child: Text(
-                            'ស្វាគមន៍មកកាន់ការធ្វើដំណើរ',
+                            'welcome_message'.tr,
                             style: TextStyle(
                               fontSize: 34,
                               fontWeight: FontWeight.bold,
@@ -89,7 +89,7 @@ class _SplashscreenState extends State<Splashscreen>
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'ទេសចរណ៍ឆ្លាតវៃ សម្រាប់អ្នក',
+                          'travel_message'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             color: AppColors
@@ -108,7 +108,7 @@ class _SplashscreenState extends State<Splashscreen>
               child: Column(
                 children: [
                   Text(
-                    'កំពុងរៀបចំដំណើររបស់អ្នក...',
+                    'loading'.tr,
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textLightSecondary, // ← white-ish

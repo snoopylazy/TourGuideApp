@@ -104,7 +104,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 foregroundColor: Colors.white,
                 elevation: 0,
                 title: Text(
-                  _currentIndex == 1 ? 'ការពេញចិត្ត' : 'ប្រវត្តិរូប',
+                  _currentIndex == 1 ? 'favorite'.tr : 'profile'.tr,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -114,12 +114,12 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                     ? [
                         IconButton(
                           icon: const Icon(Icons.settings),
-                          tooltip: 'ការកំណត់',
+                          tooltip: 'settings'.tr,
                           onPressed: () => Get.toNamed('/settings'),
                         ),
                         IconButton(
                           icon: const Icon(Icons.logout),
-                          tooltip: 'ចាកចេញ',
+                          tooltip: 'logout'.tr,
                           onPressed: () => auth.logout(),
                         ),
                       ]
@@ -142,7 +142,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 Icons.explore,
                 color: AppColors.textLight,
               ),
-              label: 'ទំព័រដើម',
+              label: 'home'.tr,
             ),
             NavigationDestination(
               icon: Icon(
@@ -153,7 +153,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 Icons.favorite,
                 color: AppColors.textLight,
               ),
-              label: 'ពេញចិត្ត',
+              label: 'favorite'.tr,
             ),
             NavigationDestination(
               icon: Icon(
@@ -164,7 +164,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 Icons.person,
                 color: AppColors.textLight,
               ),
-              label: 'ប្រវត្តិរូប',
+              label: 'profile'.tr,
             ),
           ],
         ),
@@ -184,8 +184,8 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
         icon: Icon(Icons.favorite_border, color: outline),
         onPressed: () {
           Get.snackbar(
-            'Login Required',
-            'Please login to manage favorites',
+            'login_required'.tr,
+            'please_login_to_manage_favorites'.tr,
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red.shade100,
             colorText: Colors.red.shade900,
@@ -211,7 +211,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 await favDoc.delete();
                 Get.snackbar(
                   'Removed',
-                  'Removed from favorites',
+                  'removed_from_favorites'.tr,
                   snackPosition: SnackPosition.BOTTOM,
                 );
               } else {
@@ -222,7 +222,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 }, SetOptions(merge: true));
                 Get.snackbar(
                   'Success',
-                  'Added to favorites',
+                  'added_to_favorites'.tr,
                   snackPosition: SnackPosition.BOTTOM,
                 );
               }
@@ -283,15 +283,15 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'សួស្តី${user != null ? ', ${user.name}' : ''}!',
+                                        '${user != null ? ', ${user.name}' : ''}!',
                                         style: const TextStyle(
                                           color: Colors.white70,
                                           fontSize: 14,
                                         ),
                                       ),
                                       const SizedBox(height: 4),
-                                      const Text(
-                                        'ទៅស្វែងរកកន្លែងថ្មី!',
+                                      Text(
+                                        'explore_new_places'.tr,
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 24,
@@ -328,7 +328,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                         Icons.search,
                         color: Colors.white70,
                       ),
-                      hintText: 'ស្វែងរកកន្លែង...',
+                      hintText: 'search_places'.tr,
                       hintStyle: TextStyle(
                         color: Colors.white.withOpacity(0.5),
                       ),
@@ -351,16 +351,15 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Category Filter
                   _buildCategoryChips(),
-                  const SizedBox(height: 12),
-                  // Area Filter (NEW)
+                  const SizedBox(height: 4),
                   _buildAreaChips(),
+                  Divider(color: Colors.white.withOpacity(0.2), height: 24),
                   const SizedBox(height: 24),
                   _buildFeaturedSection(uid),
                   const SizedBox(height: 24),
                   Text(
-                    'ទេសចរណ៍ពេញនិយម',
+                    'tourism_experiences'.tr,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -402,7 +401,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'តំបន់',
+              'areas'.tr,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -466,7 +465,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'ប្រភេទ',
+              'categories'.tr,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -545,7 +544,6 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
     return true;
   }
 
-  // UPDATED: _buildFeaturedSection to use new filter
   Widget _buildFeaturedSection(String? uid) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -554,7 +552,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'កន្លែងពិសេស',
+              'special_places'.tr,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -567,225 +565,251 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         SizedBox(
           height: 260,
-          child: StreamBuilder<QuerySnapshot>(
+          child: StreamBuilder<List<String>>(
             stream: FirebaseFirestore.instance
-                .collection('places')
-                .orderBy('createdAt', descending: true)
-                .snapshots(),
-            builder: (ctx, snap) {
-              if (!snap.hasData) {
-                return Center(
-                  child: ShimmerLoading(
-                    width: 50,
-                    height: 50,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                );
-              }
+                .collection('favorites')
+                .snapshots()
+                .map(
+                  (s) => s.docs
+                      .map((e) => e.get('placeId') as String)
+                      .toSet()
+                      .toList(),
+                ),
+            builder: (ctx, favSnap) {
+              // Place IDs that have 1+ favorite from any user (all users see same list)
+              final placeIdsWithFavorites = favSnap.hasData
+                  ? favSnap.data!
+                  : <String>[];
+              return StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('places')
+                    .orderBy('createdAt', descending: true)
+                    .snapshots(),
+                builder: (ctx, snap) {
+                  if (!snap.hasData) {
+                    return Center(
+                      child: ShimmerLoading(
+                        width: 50,
+                        height: 50,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    );
+                  }
 
-              final docs = snap.data!.docs.where((d) {
-                final data = d.data() as Map<String, dynamic>;
-                return _filterPlace(data);
-              }).toList();
+                  final docs = snap.data!.docs.where((d) {
+                    final data = d.data() as Map<String, dynamic>;
+                    if (!_filterPlace(data)) return false;
+                    // Show only places that have at least 1 favorite from any user
+                    if (placeIdsWithFavorites.isNotEmpty) {
+                      return placeIdsWithFavorites.contains(d.id);
+                    }
+                    return true;
+                  }).toList();
 
-              if (docs.isEmpty) {
-                return Center(
-                  child: Text(
-                    'គ្មានកន្លែងពិសេសទេ',
-                    style: TextStyle(color: Colors.grey.shade500),
-                  ),
-                );
-              }
+                  if (docs.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'no_special_places'.tr,
+                        style: TextStyle(color: Colors.grey.shade500),
+                      ),
+                    );
+                  }
 
-              _totalPages = docs.length;
+                  _totalPages = docs.length;
 
-              return Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    itemCount: docs.length,
-                    onPageChanged: (index) =>
-                        setState(() => _currentPage = index),
-                    itemBuilder: (c, i) {
-                      final d = docs[i];
-                      final data = d.data() as Map<String, dynamic>;
-                      return GestureDetector(
-                        onTap: () => Get.toNamed(
-                          '/placedetails',
-                          arguments: {'placeId': d.id},
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                            bottom: 20,
-                            right: 4,
-                            left: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
+                  return Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      PageView.builder(
+                        controller: _pageController,
+                        itemCount: docs.length,
+                        onPageChanged: (index) =>
+                            setState(() => _currentPage = index),
+                        itemBuilder: (c, i) {
+                          final d = docs[i];
+                          final data = d.data() as Map<String, dynamic>;
+                          return GestureDetector(
+                            onTap: () => Get.toNamed(
+                              '/placedetails',
+                              arguments: {'placeId': d.id},
+                            ),
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 20,
+                                right: 4,
+                                left: 4,
                               ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                () {
-                                  final imageUrl = data['imageUrl'];
-                                  final firstImage = imageUrl is List
-                                      ? (imageUrl.isNotEmpty ? imageUrl[0] : '')
-                                      : (imageUrl ?? '');
-                                  return NetworkImageWidget(
-                                    url: firstImage,
-                                    fit: BoxFit.cover,
-                                  );
-                                }(),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.black.withOpacity(0.8),
-                                      ],
-                                    ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.15),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 8),
                                   ),
-                                ),
-                                Positioned(
-                                  left: 16,
-                                  top: 16,
-                                  child: Row(
-                                    children: [
-                                      if (data['categoryName'] != null)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue.shade900
-                                                .withOpacity(0.9),
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            data['categoryName'],
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                      if (data['categoryName'] != null &&
-                                          data['areaName'] != null)
-                                        const SizedBox(width: 8),
-                                      if (data['areaName'] != null)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.green.shade900
-                                                .withOpacity(0.9),
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            data['areaName'],
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 16,
-                                  top: 16,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: _favoriteToggleButton(
-                                      uid,
-                                      d.id,
-                                      outlineColor: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 16,
-                                  bottom: 16,
-                                  right: 16,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        data['title'] ?? '',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    () {
+                                      final imageUrl = data['imageUrl'];
+                                      final firstImage = imageUrl is List
+                                          ? (imageUrl.isNotEmpty
+                                                ? imageUrl[0]
+                                                : '')
+                                          : (imageUrl ?? '');
+                                      return NetworkImageWidget(
+                                        url: firstImage,
+                                        fit: BoxFit.cover,
+                                      );
+                                    }(),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black.withOpacity(0.8),
+                                          ],
                                         ),
                                       ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        data['description'] ?? '',
-                                        style: const TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 13,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Positioned(
+                                      left: 16,
+                                      top: 16,
+                                      child: Row(
+                                        children: [
+                                          if (data['categoryName'] != null)
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 6,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue.shade900
+                                                    .withOpacity(0.9),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                data['categoryName'],
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          if (data['categoryName'] != null &&
+                                              data['areaName'] != null)
+                                            const SizedBox(width: 8),
+                                          if (data['areaName'] != null)
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 6,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.green.shade900
+                                                    .withOpacity(0.9),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                data['areaName'],
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Positioned(
+                                      right: 16,
+                                      top: 16,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: _favoriteToggleButton(
+                                          uid,
+                                          d.id,
+                                          outlineColor: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      left: 16,
+                                      bottom: 16,
+                                      right: 16,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data['title'] ?? '',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            data['description'] ?? '',
+                                            style: const TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 13,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Positioned(
+                        bottom: 8,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            docs.length,
+                            (index) => AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 24 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: _currentPage == index
+                                    ? Colors.white
+                                    : Colors.white.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  Positioned(
-                    bottom: 8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        docs.length,
-                        (index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: _currentPage == index ? 24 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: _currentPage == index
-                                ? Colors.white
-                                : Colors.white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               );
             },
           ),
@@ -824,7 +848,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               child: Padding(
                 padding: const EdgeInsets.all(40.0),
                 child: Text(
-                  'គ្មានកន្លែងពេញនិយមទេ',
+                  'no_popular_places'.tr,
                   style: TextStyle(color: Colors.grey.shade500),
                 ),
               ),
@@ -985,7 +1009,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
 
       final user = profileCtrl.user.value;
       if (user == null) {
-        return const Center(child: Text('គ្មានប្រើប្រាស់ដែលផ្ទៀងផ្ទាត់ទេ'));
+        return Center(child: Text('no_users_found'.tr));
       }
 
       final nameController = TextEditingController(text: user.name);
@@ -1058,7 +1082,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 controller: nameController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: 'Full Name',
+                  labelText: 'full_name'.tr,
                   labelStyle: const TextStyle(color: Colors.white70),
                   prefixIcon: const Icon(
                     Icons.person_outline,
@@ -1092,7 +1116,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 controller: imageUrlController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: 'Profile Image URL',
+                  labelText: 'profile_image_url'.tr,
                   labelStyle: const TextStyle(color: Colors.white70),
                   prefixIcon: const Icon(
                     Icons.image_outlined,
@@ -1127,7 +1151,12 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               child: ElevatedButton(
                 onPressed: () async {
                   if (nameController.text.trim().isEmpty) {
-                    Get.snackbar('Error', 'Name required');
+                    Get.snackbar(
+                      'Error',
+                      'name_required'.tr,
+                      backgroundColor: Colors.red.shade400,
+                      colorText: Colors.white,
+                    );
                     return;
                   }
                   await profileCtrl.updateProfile(user.uid, {
@@ -1141,8 +1170,8 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'រក្សាទុកការផ្លាស់ប្តូរ',
+                child: Text(
+                  'save_changes'.tr,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -1172,7 +1201,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
         clipBehavior: Clip.none,
         children: [
           IconButton(
-            tooltip: 'សារថ្មីៗ',
+            tooltip: 'new_message'.tr,
             icon: const Icon(Icons.notifications_outlined, color: Colors.white),
             onPressed: () => _showAdminReviewNotificationsDialog(),
           ),
@@ -1228,9 +1257,9 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                   children: [
                     const Icon(Icons.reviews, color: Colors.white),
                     const SizedBox(width: 10),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'New Reviews',
+                        'new_reviews'.tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -1249,9 +1278,9 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 child: Obx(() {
                   final notifications = notificationCtrl.adminNotifications;
                   if (notifications.isEmpty) {
-                    return const Padding(
+                    return Padding(
                       padding: EdgeInsets.all(28.0),
-                      child: Center(child: Text('No review notifications')),
+                      child: Center(child: Text('no_review_notifications'.tr)),
                     );
                   }
                   return ListView.separated(
